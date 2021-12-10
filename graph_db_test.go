@@ -1,1 +1,0 @@
-package tinymap_test
