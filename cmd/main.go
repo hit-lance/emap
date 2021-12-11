@@ -11,6 +11,9 @@ type foo struct {
 
 func main() {
 	var f foo
+	var ages map[int]int
+	// ages := make(map[int]int)
+	fmt.Println(ages==nil)
 	p := &f.b
 	f.a = 1
 	f.b = "12"

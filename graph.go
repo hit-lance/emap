@@ -13,7 +13,7 @@ type Node struct {
 }
 
 func (n *Node) String() string {
-	s := fmt.Sprintf("%+v \n", *n)
+	s := fmt.Sprintf("%+v", *n)
 	return s
 }
 
@@ -24,28 +24,29 @@ type Edge struct {
 }
 
 func (e *Edge) String() string {
-	s := fmt.Sprintf("%+v \n", *e)
+	s := fmt.Sprintf("%+v", *e)
 	return s
 }
 
 type Graph struct {
-	nodes map[int64]*Node
-	adj   map[int64][]*Edge
+	nodes     map[int64]*Node
+	neighbors map[int64][]*Edge
 }
 
 func NewGraph() *Graph {
 	var g Graph
 	g.nodes = make(map[int64]*Node)
-	g.adj = make(map[int64][]*Edge)
+	g.neighbors = make(map[int64][]*Edge)
 	return &g
 }
 
 func NewGraphFrom(fn string) *Graph {
 	var g Graph
 	g.nodes = make(map[int64]*Node)
-	g.adj = make(map[int64][]*Edge)
+	g.neighbors = make(map[int64][]*Edge)
 	f, _ := os.Open(fn)
 	parseXML(&g, f)
+	g.clean()
 	return &g
 }
 
@@ -53,8 +54,8 @@ func (g *Graph) String() string {
 	var s string
 	s += fmt.Sprintln("nodes: ")
 	s += fmt.Sprintln(g.nodes)
-	s += fmt.Sprintln("adjacency lists: ")
-	s += fmt.Sprintln(g.adj)
+	s += fmt.Sprintln("neighborsacency lists: ")
+	s += fmt.Sprint(g.neighbors)
 	return s
 }
 
@@ -69,8 +70,20 @@ func (g *Graph) AddEdge(nid1, nid2 int64, name string) {
 	node2, ok2 := g.nodes[nid2]
 	if ok1 && ok2 {
 		e := Edge{nid1, nid2, distance(node1.lat, node1.lon, node2.lat, node2.lon), name}
-		g.adj[nid1] = append(g.adj[nid1], &e)
-		g.adj[nid2] = append(g.adj[nid2], &e)
+		g.neighbors[nid1] = append(g.neighbors[nid1], &e)
+		g.neighbors[nid2] = append(g.neighbors[nid2], &e)
+	}
+}
+
+func (g *Graph) Neighbors(nid int64) []*Edge {
+	return g.neighbors[nid]
+}
+
+func (g *Graph) clean() {
+	for nid, node := range g.nodes {
+		if g.Neighbors(nid) == nil && node.name == "" {
+			delete(g.nodes, nid)
+		}
 	}
 }
 
