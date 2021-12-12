@@ -6,7 +6,7 @@ import (
 
 type SimpleNodeSet []*Node
 
-func (sns *SimpleNodeSet) Add(n *Node) {
+func (sns *SimpleNodeSet) Insert(n *Node) {
 	*sns = append(*sns, n)
 }
 

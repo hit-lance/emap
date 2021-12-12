@@ -27,8 +27,7 @@ func NewGraphFrom(fn string) *Graph {
 	return &g
 }
 
-func (g *Graph) String() string {
-	var s string
+func (g *Graph) String() (s string) {
 	s += fmt.Sprintln("nodes: ")
 	s += fmt.Sprintln(g.nodes)
 	s += fmt.Sprintln("neighbors lists: ")

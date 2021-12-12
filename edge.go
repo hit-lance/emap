@@ -9,6 +9,5 @@ type Edge struct {
 }
 
 func (e *Edge) String() string {
-	s := fmt.Sprintf("%+v\n", *e)
-	return s
+	return fmt.Sprintf("%+v\n", *e)
 }

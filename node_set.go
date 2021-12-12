@@ -1,6 +1,6 @@
 package tinymap
 
 type NodeSet interface {
-	Add(n *Node)
+	Insert(n *Node)
 	Nearest(n *Node) *Node
 }

@@ -5,15 +5,16 @@ type StreetMap struct {
 	NodeSet
 }
 
-func NewStreetMapFrom(fn string, ns NodeSet) *StreetMap{
+func NewStreetMapFrom(fn string, ns NodeSet) *StreetMap {
 	var sm StreetMap
 	sm.Graph = NewGraphFrom(fn)
 	sm.NodeSet = ns
 	for nid, n := range sm.nodes {
 		if sm.Neighbors(nid) != nil {
-			ns.Add(n)
+			ns.Insert(n)
 		}
 	}
+
 	return &sm
 }
 

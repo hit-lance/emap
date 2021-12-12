@@ -12,8 +12,7 @@ type Node struct {
 }
 
 func (n *Node) String() string {
-	s := fmt.Sprintf("%+v\n", *n)
-	return s
+	return fmt.Sprintf("%+v\n", *n)
 }
 
 // Returns the great-circle distance between vertices v and w in kilometres.
