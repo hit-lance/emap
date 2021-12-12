@@ -11,9 +11,10 @@ type foo struct {
 
 func main() {
 	var f foo
-	var ages map[int]int
+	// var ages map[int]int
+	var aa *int
 	// ages := make(map[int]int)
-	fmt.Println(ages==nil)
+	fmt.Println(aa==nil)
 	p := &f.b
 	f.a = 1
 	f.b = "12"
