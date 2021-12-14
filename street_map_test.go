@@ -5,7 +5,7 @@ import (
 )
 
 func TestStreetMap(t *testing.T) {
-	fn := "./berkeley.osm.xml"
+	fn := "./data/berkeley.osm.xml"
 	sm1 := NewStreetMapFrom(fn, &SimpleNodeSet{})
 	sm2 := NewStreetMapFrom(fn, &KDTree{})
 
@@ -30,7 +30,7 @@ func assertClosest(t testing.TB, got, want int64) {
 }
 
 func BenchmarkSimpleNodeSet(b *testing.B) {
-	fn := "./berkeley.osm.xml"
+	fn := "./data/berkeley.osm.xml"
 	sm := NewStreetMapFrom(fn, &SimpleNodeSet{})
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -39,7 +39,7 @@ func BenchmarkSimpleNodeSet(b *testing.B) {
 }
 
 func BenchmarkKDTree(b *testing.B) {
-	fn := "./berkeley.osm.xml"
+	fn := "./data/berkeley.osm.xml"
 	sm := NewStreetMapFrom(fn, &KDTree{})
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {

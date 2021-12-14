@@ -72,9 +72,13 @@ func nearestHelper(t *treeNode, n *Node, best **Node, min *float64, flag bool) {
 
 	if (flag && n.lat < t.lat) || (!flag && n.lon < t.lon) {
 		goodSide, badSide = t.left, t.right
-		lat, lon = t.lat, n.lon
 	} else {
 		goodSide, badSide = t.right, t.left
+	}
+
+	if flag {
+		lat, lon = t.lat, n.lon
+	} else {
 		lat, lon = n.lat, t.lon
 	}
 
