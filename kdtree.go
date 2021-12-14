@@ -21,11 +21,12 @@ func (t *KDTree) String() (s string) {
 }
 
 func stringHelper(t *treeNode, s *string) {
-	if t != nil {
-		*s += fmt.Sprintln(*t.Node)
-		stringHelper(t.left, s)
-		stringHelper(t.right, s)
+	if t == nil {
+		return
 	}
+	*s += fmt.Sprintln(*t.Node)
+	stringHelper(t.left, s)
+	stringHelper(t.right, s)
 }
 
 func (t *KDTree) Insert(n *Node) {
@@ -45,36 +46,40 @@ func insertHelper(t *treeNode, n *Node, flag bool) *treeNode {
 }
 
 func (t *KDTree) Nearest(n *Node) (best *Node) {
-	if t.root != nil {
-		best = t.root.Node
-		min := math.MaxFloat64
-		nearestHelper(t.root, n, &best, &min, true)
+	if t.root == nil {
+		return
 	}
+
+	best = t.root.Node
+	min := math.MaxFloat64
+	nearestHelper(t.root, n, &best, &min, true)
 	return
 }
 
 func nearestHelper(t *treeNode, n *Node, best **Node, min *float64, flag bool) {
-	if t != nil {
-		dis := distance(t.Node, n)
-		if dis < *min {
-			*min = dis
-			*best = t.Node
-		}
+	if t == nil {
+		return
+	}
 
-		var goodSide, badSide *treeNode
-		var lat, lon float64
+	dis := distance(t.Node, n)
+	if dis < *min {
+		*min = dis
+		*best = t.Node
+	}
 
-		if (flag && n.lat < t.lat) || (!flag && n.lon < t.lon) {
-			goodSide, badSide = t.left, t.right
-			lat, lon = t.lat, n.lon
-		} else {
-			goodSide, badSide = t.right, t.left
-			lat, lon = n.lat, t.lon
-		}
+	var goodSide, badSide *treeNode
+	var lat, lon float64
 
-		nearestHelper(goodSide, n, best, min, !flag)
-		if distance(n, &Node{lat: lat, lon: lon}) < *min {
-			nearestHelper(badSide, n, best, min, !flag)
-		}
+	if (flag && n.lat < t.lat) || (!flag && n.lon < t.lon) {
+		goodSide, badSide = t.left, t.right
+		lat, lon = t.lat, n.lon
+	} else {
+		goodSide, badSide = t.right, t.left
+		lat, lon = n.lat, t.lon
+	}
+
+	nearestHelper(goodSide, n, best, min, !flag)
+	if distance(n, &Node{lat: lat, lon: lon}) < *min {
+		nearestHelper(badSide, n, best, min, !flag)
 	}
 }

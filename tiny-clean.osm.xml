@@ -6,13 +6,12 @@
     	<tag k="name:en" v="bar"/>
 	</node>
 	<node id="22" lat="38.2" lon="0.2" version="1"/>
-	<node id="22" lat="38.2" lon="0.2" version="1"/>
 	<node id="41" lat="38.1" lon="0.4" version="1"/>
 	<node id="63" lat="38.3" lon="0.6" version="1"/>
 	<node id="55" lat="38.5" lon="0.5" version="1"/>
 	<node id="46" lat="38.6" lon="0.4" version="1"/>						
 	<node id="66" lat="38.6" lon="0.6" version="1"/>
-	<node id="99" lat="38.69" lon="0.69" version="1"/>						
+					
 	<way id="114163" version="1">
 		<nd ref="11"/>
 		<nd ref="41"/>

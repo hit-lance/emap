@@ -1,4 +1,4 @@
-package main
+package tinymap
 
 import (
 	"container/heap"
@@ -7,10 +7,14 @@ import (
 
 // An Item is something we manage in a priority queue.
 type Item struct {
-	value    int64 // The value of the item; arbitrary.
-	priority float64    // The priority of the item in the queue.
+	value    int64   // The value of the item; arbitrary.
+	priority float64 // The priority of the item in the queue.
 	// The index is needed by update and is maintained by the heap.Interface methods.
 	index int // The index of the item in the heap.
+}
+
+func (i *Item) String() string {
+	return fmt.Sprint(*i)
 }
 
 // A PriorityQueue implements heap.Interface and holds Items.
@@ -51,43 +55,4 @@ func (pq *PriorityQueue) update(item *Item, value int64, priority float64) {
 	item.value = value
 	item.priority = priority
 	heap.Fix(pq, item.index)
-}
-
-// This example creates a PriorityQueue with some items, adds and manipulates an item,
-// and then removes the items in priority order.
-func main() {
-	// Some items and their priorities.
-	items := map[int64]float64{
-		1: 3.0, 2: 2.0, 3: 1.0,
-	}
-
-	// Create a priority queue, put the items in it, and
-	// establish the priority queue (heap) invariants.
-	pq := make(PriorityQueue, len(items))
-	i := 0
-	for value, priority := range items {
-		pq[i] = &Item{
-			value:    value,
-			priority: priority,
-			index:    i,
-		}
-		i++
-	}
-	heap.Init(&pq)
-
-	// Insert a new item and then modify its priority.
-	item := &Item{
-		value:    4,
-		priority: 8,
-	}
-	fmt.Println(&item)
-	heap.Push(&pq, item)
-	fmt.Println(&item)
-	pq.update(item, item.value, 2.5)
-
-	// Take the items out; they arrive in decreasing priority order.
-	for pq.Len() > 0 {
-		item := heap.Pop(&pq).(*Item)
-		fmt.Printf("%.2f:%d ", item.priority, item.value)
-	}
 }
