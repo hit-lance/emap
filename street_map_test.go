@@ -6,7 +6,7 @@ import (
 
 func TestStreetMap(t *testing.T) {
 	fn := "./data/berkeley.osm.xml"
-	sm1 := NewStreetMapFrom(fn, &SimpleNodeSet{})
+	sm1 := NewStreetMapFrom(fn, &NaiveNodeSet{})
 	sm2 := NewStreetMapFrom(fn, &KDTree{})
 
 	t.Run("find_closest_brute_force", func(t *testing.T) {
@@ -29,9 +29,9 @@ func assertClosest(t testing.TB, got, want int64) {
 	}
 }
 
-func BenchmarkSimpleNodeSet(b *testing.B) {
+func BenchmarkNaiveNodeSet(b *testing.B) {
 	fn := "./data/berkeley.osm.xml"
-	sm := NewStreetMapFrom(fn, &SimpleNodeSet{})
+	sm := NewStreetMapFrom(fn, &NaiveNodeSet{})
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		sm.Closest(37.875613, -122.26009)

@@ -5,11 +5,11 @@
 go test -benchmem -run=^$ -bench=. -benchtime=1000x
 ```
 ### Find Closest
-#### SimpleNodeSet vs KDTree
+#### NaiveNodeSet vs KDTree
 
 KDTree使查询速度提高了500倍
 ```shell
-BenchmarkSimpleNodeSet      1000           4194527 ns/op              48 B/op          1 allocs/op
+BenchmarkNaiveNodeSet       1000           4309927 ns/op              48 B/op          1 allocs/op
 BenchmarkKDTree             1000              7252 ns/op              48 B/op          1 allocs/op
 ```
 

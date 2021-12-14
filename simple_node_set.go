@@ -4,15 +4,15 @@ import (
 	"math"
 )
 
-type SimpleNodeSet []*Node
+type NaiveNodeSet []*Node
 
-func (sns *SimpleNodeSet) Insert(n *Node) {
-	*sns = append(*sns, n)
+func (nns *NaiveNodeSet) Insert(n *Node) {
+	*nns = append(*nns, n)
 }
 
-func (sns *SimpleNodeSet) Nearest(n *Node) (best *Node) {
+func (nns *NaiveNodeSet) Nearest(n *Node) (best *Node) {
 	min := math.MaxFloat64
-	for _, v := range *sns {
+	for _, v := range *nns {
 		dis := distance(v, n)
 		if dis < min {
 			min = dis
