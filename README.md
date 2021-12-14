@@ -5,7 +5,7 @@
 go test -benchmem -run=^$ -bench=. -benchtime=1000x
 ```
 ### Find Closest
-- SimpleNodeSet vs KDTree
+#### SimpleNodeSet vs KDTree
 
 KDTree使查询速度提高了500倍
 ```shell
@@ -13,7 +13,7 @@ BenchmarkSimpleNodeSet      1000           4194527 ns/op              48 B/op   
 BenchmarkKDTree             1000              7252 ns/op              48 B/op          1 allocs/op
 ```
 
-### Routing
+#### Routing
 - Dijkstra vs A*
 
 A*使路径查询速度提高了3倍，相应内存操作也少了许多（因为做了内存优化）
