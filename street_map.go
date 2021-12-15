@@ -1,4 +1,4 @@
-package tinymap
+package etaxi
 
 type StreetMap struct {
 	*Graph
@@ -19,5 +19,5 @@ func NewStreetMapFrom(fn string, ns NodeSet) *StreetMap {
 }
 
 func (sm *StreetMap) Closest(lat, lon float64) int64 {
-	return sm.NodeSet.Nearest(&Node{lat: lat, lon: lon}).id
+	return sm.Nearest(&Node{lat: lat, lon: lon}).id
 }

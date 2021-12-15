@@ -1,4 +1,4 @@
-package tinymap
+package etaxi
 
 type NodeSet interface {
 	Insert(n *Node)

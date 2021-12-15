@@ -1,4 +1,4 @@
-package tinymap
+package etaxi
 
 import (
 	"encoding/xml"
