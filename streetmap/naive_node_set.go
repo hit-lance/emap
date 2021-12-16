@@ -1,4 +1,4 @@
-package etaxi
+package streetmap
 
 import (
 	"math"
@@ -13,7 +13,7 @@ func (nns *NaiveNodeSet) Insert(n *Node) {
 func (nns *NaiveNodeSet) Nearest(n *Node) (best *Node) {
 	min := math.MaxFloat64
 	for _, v := range *nns {
-		dis := distance(v, n)
+		dis := v.Distance(n)
 		if dis < min {
 			min = dis
 			best = v

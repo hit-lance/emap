@@ -1,4 +1,4 @@
-package etaxi
+package streetmap
 
 import (
 	"testing"
@@ -22,7 +22,7 @@ func TestGraph(t *testing.T) {
 	})
 
 	t.Run("new graph from xml file", func(t *testing.T) {
-		fn := "./data/tiny-clean.osm.xml"
+		fn := "../data/tiny-clean.osm.xml"
 		g := NewGraphFrom(fn)
 		got := len(g.nodes)
 		want := 7

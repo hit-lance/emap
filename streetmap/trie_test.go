@@ -1,4 +1,4 @@
-package etaxi
+package streetmap
 
 import (
 	"reflect"

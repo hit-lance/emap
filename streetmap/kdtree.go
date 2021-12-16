@@ -1,4 +1,4 @@
-package etaxi
+package streetmap
 
 import (
 	"fmt"
@@ -61,7 +61,7 @@ func nearestHelper(t *treeNode, n *Node, best **Node, min *float64, flag bool) {
 		return
 	}
 
-	dis := distance(t.Node, n)
+	dis := n.Distance(t.Node)
 	if dis < *min {
 		*min = dis
 		*best = t.Node
@@ -83,7 +83,7 @@ func nearestHelper(t *treeNode, n *Node, best **Node, min *float64, flag bool) {
 	}
 
 	nearestHelper(goodSide, n, best, min, !flag)
-	if distance(n, &Node{lat: lat, lon: lon}) < *min {
+	if n.Distance(&Node{lat: lat, lon: lon}) < *min {
 		nearestHelper(badSide, n, best, min, !flag)
 	}
 }

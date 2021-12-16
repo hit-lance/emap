@@ -1,4 +1,4 @@
-package etaxi
+package streetmap
 
 type NodeSet interface {
 	Insert(n *Node)

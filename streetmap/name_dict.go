@@ -1,4 +1,4 @@
-package etaxi
+package streetmap
 
 type NameDict interface {
 	put(s string, v int64)

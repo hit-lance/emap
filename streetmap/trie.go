@@ -1,4 +1,5 @@
-package etaxi
+package streetmap
+
 
 type trieNode struct {
 	val  int64

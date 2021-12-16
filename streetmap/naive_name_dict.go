@@ -1,6 +1,7 @@
-package etaxi
+package streetmap
 
 import "strings"
+
 
 type NaiveNameDict map[string]int64
 
