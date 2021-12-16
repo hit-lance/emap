@@ -7,15 +7,15 @@ import (
 
 func TestTrie(t *testing.T) {
 
-	t.Run("test_keys_with_prefix", func(t *testing.T) {
+	t.Run("keys_with_prefix", func(t *testing.T) {
 		trie := &Trie{}
 		strs := []string{"a", "awls", "sad", "sam", "same", "sap"}
 		for i, s := range strs {
 			trie.put(s, int64(i))
 		}
 
-		assertSliceEqual(t, trie.keysWithPrefix("sam"), []int64{3, 4})
-		assertSliceEqual(t, trie.keysWithPrefix("c"), []int64{})
+		assertSliceEqual(t, trie.keysWithPrefix("sam"), []string{"sam", "same"})
+		assertSliceEqual(t, trie.keysWithPrefix("c"), []string{})
 	})
 
 	t.Run("chinese", func(t *testing.T) {
@@ -41,9 +41,9 @@ func assertNodeIdEqual(t testing.TB, got, want int64) {
 	}
 }
 
-func assertSliceEqual(t testing.TB, got, want []int64) {
+func assertSliceEqual(t testing.TB, got, want []string) {
 	t.Helper()
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got %d but expected %d", got, want)
+		t.Errorf("got %v but expected %v", got, want)
 	}
 }
