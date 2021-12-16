@@ -2,7 +2,6 @@ package streetmap
 
 import "strings"
 
-
 type NaiveNameDict map[string]int64
 
 func (nnd NaiveNameDict) put(s string, v int64) {
@@ -17,15 +16,15 @@ func (nnd NaiveNameDict) get(s string) (v int64) {
 	}
 }
 
-func (nnd *NaiveNameDict) keys() []string {
-	return nnd.keysWithPrefix("")
+func (nnd *NaiveNameDict) vals() []int64 {
+	return nnd.valsWithPrefix("")
 }
 
-func (nnd NaiveNameDict) keysWithPrefix(pre string) []string {
-	s := []string{}
-	for k := range nnd {
+func (nnd NaiveNameDict) valsWithPrefix(pre string) []int64 {
+	s := []int64{}
+	for k, v := range nnd {
 		if strings.HasPrefix(k, pre) {
-			s = append(s, k)
+			s = append(s, v)
 		}
 	}
 	return s

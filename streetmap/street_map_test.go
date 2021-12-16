@@ -23,7 +23,7 @@ func TestStreetMap(t *testing.T) {
 	})
 
 	t.Run("keys_with_prefix_naive", func(t *testing.T) {
-		keys := sm_kdtree_naive.nd.keys()
+		keys := sm_kdtree_naive.nd.vals()
 		want := 1939
 		got := len(keys)
 		if got != want {
@@ -32,7 +32,7 @@ func TestStreetMap(t *testing.T) {
 	})
 
 	t.Run("keys_with_prefix_trie", func(t *testing.T) {
-		keys := sm_kdtree_trie.nd.keys()
+		keys := sm_kdtree_trie.nd.vals()
 		want := 1939
 		got := len(keys)
 		if got != want {
@@ -69,11 +69,11 @@ func BenchmarkKDTree(b *testing.B) {
 func BenchmarkNaiveNameDict(b *testing.B) {
 	fn := "../data/berkeley.osm.xml"
 	sm := NewStreetMapFrom(fn, &NaiveNodeSet{}, &NaiveNameDict{})
-	keys := sm.nd.keys()
+	nids := sm.nd.vals()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		for _, k := range keys {
-			sm.getNodesByPrefix(k)
+		for _, nid := range nids {
+			sm.nd.valsWithPrefix(sm.nodes[nid].name)
 		}
 	}
 }
@@ -81,11 +81,12 @@ func BenchmarkNaiveNameDict(b *testing.B) {
 func BenchmarkTrie(b *testing.B) {
 	fn := "../data/berkeley.osm.xml"
 	sm := NewStreetMapFrom(fn, &NaiveNodeSet{}, &Trie{})
-	keys := sm.nd.keys()
+	nids := sm.nd.vals()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		for _, k := range keys {
-			sm.getNodesByPrefix(k)
+		for _, nid := range nids {
+			sm.nd.valsWithPrefix(sm.nodes[nid].name)
 		}
 	}
 }
+

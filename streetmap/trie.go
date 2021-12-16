@@ -49,24 +49,24 @@ func getHelper(t *trieNode, r []rune, d int) *trieNode {
 	return getHelper(t.next[r[d]], r, d+1)
 }
 
-func (t *Trie) keys() []string {
-	return t.keysWithPrefix("")
+func (t *Trie) vals() []int64 {
+	return t.valsWithPrefix("")
 }
 
-func (t *Trie) keysWithPrefix(pre string) []string {
-	s := []string{}
-	collect(getHelper(t.root, []rune(pre), 0), pre, &s)
+func (t *Trie) valsWithPrefix(pre string) []int64 {
+	s := []int64{}
+	collect(getHelper(t.root, []rune(pre), 0), &s)
 	return s
 }
 
-func collect(t *trieNode, pre string, s *[]string) {
+func collect(t *trieNode, s *[]int64) {
 	if t == nil {
 		return
 	}
 	if t.val != INVALID_NODE_ID {
-		*s = append(*s, pre)
+		*s = append(*s, t.val)
 	}
-	for r, n := range t.next {
-		collect(n, pre+string(r), s)
+	for _, n := range t.next {
+		collect(n, s)
 	}
 }
