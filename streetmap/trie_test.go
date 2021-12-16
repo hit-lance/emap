@@ -14,8 +14,8 @@ func TestTrie(t *testing.T) {
 			trie.put(s, int64(i))
 		}
 
-		// assertSliceEqual(t, trie.keysWithPrefix("sam"), []string{"sam", "same"})
-		// assertSliceEqual(t, trie.keysWithPrefix("c"), []string{})
+		assertSliceEqual(t, trie.keysWithPrefix("sam"), []string{"sam", "same"})
+		assertSliceEqual(t, trie.keysWithPrefix("c"), []string{})
 	})
 
 	t.Run("chinese", func(t *testing.T) {

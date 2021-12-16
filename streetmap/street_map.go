@@ -27,10 +27,10 @@ func (sm *StreetMap) Closest(lat, lon float64) int64 {
 	return sm.ns.Nearest(&Node{lat: lat, lon: lon}).id
 }
 
-// func (sm *StreetMap) getNodesByPrefix(name string) []string {
-// 	return sm.nd.keysWithPrefix("")
-// }
+func (sm *StreetMap) getNodesByPrefix(name string) []string {
+	return sm.nd.keysWithPrefix(name)
+}
 
-// func (sm *StreetMap) GetNodeIdByName(name string) int64 {
-// 	return sm.nd.get(name)
-// }
+func (sm *StreetMap) GetNodeIdByName(name string) int64 {
+	return sm.nd.get(name)
+}
