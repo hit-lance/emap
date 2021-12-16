@@ -5,6 +5,8 @@ import (
 	"math"
 )
 
+const INVALID_NODE_ID = -1
+
 type Node struct {
 	id       int64
 	lat, lon float64
