@@ -15,10 +15,19 @@ func TestStreetMap(t *testing.T) {
 		assertClosest(t, got, want)
 	})
 
-	t.Run("find_closest_kdtree)", func(t *testing.T) {
+	t.Run("find_closest_kdtree", func(t *testing.T) {
 		got := sm2.Closest(37.875613, -122.26009)
 		want := int64(1281866063)
 		assertClosest(t, got, want)
+	})
+
+	t.Run("trie", func(t *testing.T) {
+		keys := sm2.trie.keys()
+		want := 1939
+		got := len(keys)
+		if got != want {
+			t.Errorf("got %d but expected %d", got, want)
+		}
 	})
 }
 

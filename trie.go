@@ -48,6 +48,10 @@ func getHelper(t *trieNode, r []rune, d int) *trieNode {
 	return getHelper(t.next[r[d]], r, d+1)
 }
 
+func (t *Trie) keys() []int64 {
+	return t.keysWithPrefix("")
+}
+
 func (t *Trie) keysWithPrefix(pre string) []int64 {
 	s := []int64{}
 	collect(getHelper(t.root, []rune(pre), 0), &s)
