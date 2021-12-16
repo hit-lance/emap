@@ -33,15 +33,35 @@ func putHelper(t *trieNode, r []rune, v int64, d int) *trieNode {
 }
 
 func (t *Trie) get(s string) (v int64) {
-	return getHelper(t.root, []rune(s), 0)
-}
-
-func getHelper(t *trieNode, r []rune, d int) int64 {
-	if t == nil {
+	n := getHelper(t.root, []rune(s), 0)
+	if n == nil {
 		return INVALID_NODE_ID
 	}
-	if len(r) == d {
-		return t.val
+	return n.val
+}
+
+func getHelper(t *trieNode, r []rune, d int) *trieNode {
+	if t == nil || len(r) == d {
+		return t
 	}
+
 	return getHelper(t.next[r[d]], r, d+1)
+}
+
+func (t *Trie) keysWithPrefix(pre string) []int64 {
+	s := []int64{}
+	collect(getHelper(t.root, []rune(pre), 0), &s)
+	return s
+}
+
+func collect(t *trieNode, s *[]int64) {
+	if t == nil {
+		return
+	}
+	if t.val != INVALID_NODE_ID {
+		*s = append(*s, t.val)
+	}
+	for _, n := range t.next {
+		collect(n, s)
+	}
 }
