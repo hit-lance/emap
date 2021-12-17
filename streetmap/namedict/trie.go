@@ -7,9 +7,9 @@ type trieNode struct {
 	next map[rune]*trieNode
 }
 
-func NewTrieNode() *trieNode {
+func newTrieNode() *trieNode {
 	var n trieNode
-	n.val = graph.INVALID_NODE_ID
+	n.val = graph.InvalidNodeID
 	n.next = make(map[rune]*trieNode)
 	return &n
 }
@@ -24,7 +24,7 @@ func (t *Trie) Put(s string, v int64) {
 
 func putHelper(t *trieNode, r []rune, v int64, d int) *trieNode {
 	if t == nil {
-		t = NewTrieNode()
+		t = newTrieNode()
 	}
 	if len(r) == d {
 		t.val = v
@@ -37,7 +37,7 @@ func putHelper(t *trieNode, r []rune, v int64, d int) *trieNode {
 func (t *Trie) Get(s string) (v int64) {
 	n := getHelper(t.root, []rune(s), 0)
 	if n == nil {
-		return graph.INVALID_NODE_ID
+		return graph.InvalidNodeID
 	}
 	return n.val
 }
@@ -64,7 +64,7 @@ func collect(t *trieNode, pre string, s *[]string) {
 	if t == nil {
 		return
 	}
-	if t.val != graph.INVALID_NODE_ID {
+	if t.val != graph.InvalidNodeID {
 		*s = append(*s, pre)
 	}
 	for r, n := range t.next {

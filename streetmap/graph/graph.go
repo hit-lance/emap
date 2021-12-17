@@ -36,17 +36,17 @@ func (g *Graph) String() (s string) {
 }
 
 func (g *Graph) NodeIds() []int64 {
-	nodeIds := make([]int64, len(g.nodes))
+	nids := make([]int64, len(g.nodes))
 	i := 0
 
 	for k := range g.nodes {
-		nodeIds[i] = k
+		nids[i] = k
 		i++
 	}
-	return nodeIds
+	return nids
 }
 
-func (g *Graph) GetNodeById(nid int64) *Node {
+func (g *Graph) GetNodeByID(nid int64) *Node {
 	return g.nodes[nid]
 }
 
@@ -86,7 +86,7 @@ func (g *Graph) clean() {
 // // Returns the great-circle distance between vertices v and w in kilometres.
 // // Refer from https://www.movable-type.co.uk/scripts/latlong.html
 // func Distance(lat1, lon1, lat2, lon2 float64) float64 {
-// 	const EARTH_RADIUS = 6371
+// 	const earthRadius = 6371
 
 // 	phi1 := (lat2 - lat1) * (math.Pi / 180.0)
 // 	phi2 := (lon2 - lon1) * (math.Pi / 180.0)
@@ -98,7 +98,7 @@ func (g *Graph) clean() {
 // 	a := a1 + a2
 // 	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
 
-// 	return EARTH_RADIUS * c
+// 	return earthRadius * c
 // }
 
 // // Returns the initial bearing (angle) between vertices v and w in degrees.

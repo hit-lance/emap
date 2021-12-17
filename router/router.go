@@ -96,7 +96,7 @@ func aStar(m *sm.StreetMap, src, dst int64) (sol *list.List) {
 		}
 	}
 
-	heuristic[src] = m.GetNodeById(src).Distance(m.GetNodeById(dst))
+	heuristic[src] = m.GetNodeByID(src).Distance(m.GetNodeByID(dst))
 	item := &Item{value: src, priority: heuristic[src]}
 	heap.Push(&pq, item)
 	itemPtrs[src] = item
@@ -128,7 +128,7 @@ func aStar(m *sm.StreetMap, src, dst int64) (sol *list.List) {
 				edgeTo[q] = p
 
 				if _, ok := heuristic[q]; !ok {
-					heuristic[q] = m.GetNodeById(q).Distance(m.GetNodeById(dst))
+					heuristic[q] = m.GetNodeByID(q).Distance(m.GetNodeByID(dst))
 				}
 
 				if ptr, ok := itemPtrs[q]; ok {

@@ -14,9 +14,8 @@ func (nnd NaiveNameDict) Put(s string, v int64) {
 func (nnd NaiveNameDict) Get(s string) (v int64) {
 	if v, ok := nnd[s]; ok {
 		return v
-	} else {
-		return graph.INVALID_NODE_ID
-	}
+	} 
+	return graph.InvalidNodeID
 }
 
 func (nnd *NaiveNameDict) Keys() []string {

@@ -8,14 +8,14 @@ import (
 	"strconv"
 )
 
-var allowed_highway_types = map[string]bool{"motorway": true, "trunk": true, "primary": true, "secondary": true, "tertiary": true, "unclassified": true,
+var allowedHighwayTypes = map[string]bool{"motorway": true, "trunk": true, "primary": true, "secondary": true, "tertiary": true, "unclassified": true,
 	"residential": true, "living_street": true, "motorway_link": true, "trunk_link": true, "primary_link": true,
 	"secondary_link": true, "tertiary_link": true}
 
 type states struct {
 	active, wayName, wayType string
 	Node
-	nodeIds []int64
+	nids []int64
 }
 
 func parseXML(g *Graph, r io.Reader) {
@@ -51,8 +51,8 @@ func parseXML(g *Graph, r io.Reader) {
 			} else if tok.Name.Local == "way" {
 				s.active = "way"
 			} else if s.active == "way" && tok.Name.Local == "nd" {
-				nodeId, _ := strconv.ParseInt(tok.Attr[0].Value, 10, 64)
-				s.nodeIds = append(s.nodeIds, nodeId)
+				nid, _ := strconv.ParseInt(tok.Attr[0].Value, 10, 64)
+				s.nids = append(s.nids, nid)
 			} else if s.active == "way" && tok.Name.Local == "tag" {
 				if tok.Attr[0].Value == "name" {
 					s.wayName = tok.Attr[1].Value
@@ -65,9 +65,9 @@ func parseXML(g *Graph, r io.Reader) {
 				g.AddNode(&Node{s.id, s.lat, s.lon, s.name})
 				s = states{}
 			} else if tok.Name.Local == "way" {
-				if _, ok := allowed_highway_types[s.wayType]; ok {
-					for i := 0; i < len(s.nodeIds)-1; i++ {
-						g.AddEdge(s.nodeIds[i], s.nodeIds[i+1], s.wayName)
+				if _, ok := allowedHighwayTypes[s.wayType]; ok {
+					for i := 0; i < len(s.nids)-1; i++ {
+						g.AddEdge(s.nids[i], s.nids[i+1], s.wayName)
 					}
 				}
 				s = states{}

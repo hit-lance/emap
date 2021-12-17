@@ -23,12 +23,12 @@ func NewStreetMapFrom(fn string, ns ns.NodeSet, nd nd.NameDict) *StreetMap {
 	sm.NodeSet = ns
 	sm.NameDict = nd
 	for _, nid := range sm.NodeIds() {
-		n := sm.GetNodeById(nid)
+		n := sm.GetNodeByID(nid)
 		if sm.Neighbors(nid) != nil {
 			ns.Insert(n)
 		}
 		if n.Name() != "" {
-			sm.NameDict.Put(n.Name(), n.Id())
+			sm.NameDict.Put(n.Name(), n.ID())
 		}
 	}
 
@@ -36,13 +36,13 @@ func NewStreetMapFrom(fn string, ns ns.NodeSet, nd nd.NameDict) *StreetMap {
 }
 
 func (sm *StreetMap) Closest(lat, lon float64) int64 {
-	return sm.NodeSet.Nearest(graph.NewNode(lat, lon)).Id()
+	return sm.NodeSet.Nearest(graph.NewNode(lat, lon)).ID()
 }
 
 func (sm *StreetMap) GetNodesByPrefix(name string) []string {
 	return sm.NameDict.KeysWithPrefix(name)
 }
 
-func (sm *StreetMap) GetNodeIdByName(name string) int64 {
+func (sm *StreetMap) GetNodeIDByName(name string) int64 {
 	return sm.NameDict.Get(name)
 }

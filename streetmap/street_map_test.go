@@ -8,24 +8,24 @@ import (
 
 func TestStreetMap(t *testing.T) {
 	fn := "../data/berkeley.osm.xml"
-	sm_kdtree_naive := NewStreetMapFrom(fn, &ns.KDTree{}, &nd.NaiveNameDict{})
-	sm_naive_trie := NewStreetMapFrom(fn, &ns.NaiveNodeSet{}, &nd.Trie{})
-	sm_kdtree_trie := NewStreetMapFrom(fn, &ns.KDTree{}, &nd.Trie{})
+	smKDtreeNaive := NewStreetMapFrom(fn, &ns.KDTree{}, &nd.NaiveNameDict{})
+	smNaiveTrie := NewStreetMapFrom(fn, &ns.NaiveNodeSet{}, &nd.Trie{})
+	smKDtreeTrie := NewStreetMapFrom(fn, &ns.KDTree{}, &nd.Trie{})
 
 	t.Run("find_closest_naive", func(t *testing.T) {
-		got := sm_naive_trie.Closest(37.875613, -122.26009)
+		got := smNaiveTrie.Closest(37.875613, -122.26009)
 		want := int64(1281866063)
 		assertClosest(t, got, want)
 	})
 
 	t.Run("find_closest_kdtree", func(t *testing.T) {
-		got := sm_kdtree_trie.Closest(37.875613, -122.26009)
+		got := smKDtreeTrie.Closest(37.875613, -122.26009)
 		want := int64(1281866063)
 		assertClosest(t, got, want)
 	})
 
 	t.Run("keys_with_prefix_naive", func(t *testing.T) {
-		keys := sm_kdtree_naive.NameDict.Keys()
+		keys := smKDtreeNaive.NameDict.Keys()
 		want := 1939
 		got := len(keys)
 		if got != want {
@@ -34,7 +34,7 @@ func TestStreetMap(t *testing.T) {
 	})
 
 	t.Run("keys_with_prefix_trie", func(t *testing.T) {
-		keys := sm_kdtree_trie.NameDict.Keys()
+		keys := smKDtreeTrie.NameDict.Keys()
 		want := 1939
 		got := len(keys)
 		if got != want {
@@ -88,6 +88,6 @@ func BenchmarkTrie(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		for _, key := range keys {
 			sm.GetNodesByPrefix(key)
-		}      
+		}
 	}
 }

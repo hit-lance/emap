@@ -26,15 +26,15 @@ func TestTrie(t *testing.T) {
 		}
 
 		for i, s := range strs {
-			assertNodeIdEqual(t, int64(i), trie.Get(s))
+			assertNodeIDEqual(t, int64(i), trie.Get(s))
 		}
-		assertNodeIdEqual(t, -1, trie.Get("美国"))
-		assertNodeIdEqual(t, -1, trie.Get("中国广东深圳南山"))
+		assertNodeIDEqual(t, -1, trie.Get("美国"))
+		assertNodeIDEqual(t, -1, trie.Get("中国广东深圳南山"))
 	})
 
 }
 
-func assertNodeIdEqual(t testing.TB, got, want int64) {
+func assertNodeIDEqual(t testing.TB, got, want int64) {
 	t.Helper()
 	if got != want {
 		t.Errorf("got %d but expected %d", got, want)
