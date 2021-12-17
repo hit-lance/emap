@@ -1,21 +1,24 @@
 package streetmap
 
 import (
-	"etaxi/streetmap/graph"
 	"strings"
 )
 
-type NaiveNameDict map[string]int64
+type NaiveNameDict map[string]*[]int64
 
 func (nnd NaiveNameDict) Put(s string, v int64) {
-	nnd[s] = v
+	if n, ok := nnd[s]; ok {
+		*n = append(*n, v)
+	} else {
+		nnd[s] = &[]int64{v}
+	}
 }
 
-func (nnd NaiveNameDict) Get(s string) (v int64) {
+func (nnd NaiveNameDict) Get(s string) (ret []int64) {
 	if v, ok := nnd[s]; ok {
-		return v
-	} 
-	return graph.InvalidNodeID
+		ret = *v
+	}
+	return
 }
 
 func (nnd *NaiveNameDict) Keys() []string {

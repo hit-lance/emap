@@ -3,6 +3,7 @@ package streetmap
 import (
 	nd "etaxi/streetmap/namedict"
 	ns "etaxi/streetmap/nodeset"
+	"reflect"
 	"testing"
 )
 
@@ -15,13 +16,13 @@ func TestStreetMap(t *testing.T) {
 	t.Run("find_closest_naive", func(t *testing.T) {
 		got := smNaiveTrie.Closest(37.875613, -122.26009)
 		want := int64(1281866063)
-		assertClosest(t, got, want)
+		assertNodeIDEqual(t, got, want)
 	})
 
 	t.Run("find_closest_kdtree", func(t *testing.T) {
 		got := smKDtreeTrie.Closest(37.875613, -122.26009)
 		want := int64(1281866063)
-		assertClosest(t, got, want)
+		assertNodeIDEqual(t, got, want)
 	})
 
 	t.Run("keys_with_prefix_naive", func(t *testing.T) {
@@ -40,13 +41,21 @@ func TestStreetMap(t *testing.T) {
 		if got != want {
 			t.Errorf("got %d but expected %d", got, want)
 		}
+		assertSliceEqual(t, smKDtreeTrie.GetNodeIDByName("Starbucks Coffee"), []int64{1467717295, 343610934})
 	})
 }
 
-func assertClosest(t testing.TB, got, want int64) {
+func assertNodeIDEqual(t testing.TB, got, want int64) {
 	t.Helper()
 	if got != want {
 		t.Errorf("got %d but expected %d", got, want)
+	}
+}
+
+func assertSliceEqual(t testing.TB, got, want []int64) {
+	t.Helper()
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %v but expected %v", got, want)
 	}
 }
 

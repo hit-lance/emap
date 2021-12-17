@@ -1,15 +1,13 @@
 package streetmap
 
-import "etaxi/streetmap/graph"
-
 type trieNode struct {
-	val  int64
+	val  *[]int64
 	next map[rune]*trieNode
 }
 
 func newTrieNode() *trieNode {
 	var n trieNode
-	n.val = graph.InvalidNodeID
+	n.val = &[]int64{}
 	n.next = make(map[rune]*trieNode)
 	return &n
 }
@@ -27,19 +25,19 @@ func putHelper(t *trieNode, r []rune, v int64, d int) *trieNode {
 		t = newTrieNode()
 	}
 	if len(r) == d {
-		t.val = v
+		*t.val = append(*t.val, v)
 	} else {
 		t.next[r[d]] = putHelper(t.next[r[d]], r, v, d+1)
 	}
 	return t
 }
 
-func (t *Trie) Get(s string) (v int64) {
+func (t *Trie) Get(s string) (v []int64) {
 	n := getHelper(t.root, []rune(s), 0)
-	if n == nil {
-		return graph.InvalidNodeID
+	if n != nil {
+		v = *n.val
 	}
-	return n.val
+	return
 }
 
 func getHelper(t *trieNode, r []rune, d int) *trieNode {
@@ -64,7 +62,7 @@ func collect(t *trieNode, pre string, s *[]string) {
 	if t == nil {
 		return
 	}
-	if t.val != graph.InvalidNodeID {
+	if len(*t.val) != 0 {
 		*s = append(*s, pre)
 	}
 	for r, n := range t.next {

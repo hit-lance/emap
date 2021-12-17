@@ -26,12 +26,23 @@ func TestTrie(t *testing.T) {
 		}
 
 		for i, s := range strs {
-			assertNodeIDEqual(t, int64(i), trie.Get(s))
+			assertNodeIDEqual(t, int64(i), trie.Get(s)[0])
 		}
-		assertNodeIDEqual(t, -1, trie.Get("美国"))
-		assertNodeIDEqual(t, -1, trie.Get("中国广东深圳南山"))
+
+		trie.Put("中国", 5)
+		assert(t, len(trie.Get("中")) == 1)
+		assert(t, len(trie.Get("中国")) == 2)
+		assert(t, len(trie.Get("美国")) == 0)
+		assert(t, len(trie.Get("中国广东深圳南山")) == 0)
+
 	})
 
+}
+
+func assert(t testing.TB, b bool) {
+	if !b {
+		t.Errorf("assert failed")
+	}
 }
 
 func assertNodeIDEqual(t testing.TB, got, want int64) {

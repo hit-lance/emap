@@ -43,6 +43,6 @@ func (sm *StreetMap) GetNodesByPrefix(name string) []string {
 	return sm.NameDict.KeysWithPrefix(name)
 }
 
-func (sm *StreetMap) GetNodeIDByName(name string) int64 {
+func (sm *StreetMap) GetNodeIDByName(name string) []int64 {
 	return sm.NameDict.Get(name)
 }
