@@ -68,12 +68,12 @@ func BenchmarkKDTree(b *testing.B) {
 
 func BenchmarkNaiveNameDict(b *testing.B) {
 	fn := "../data/berkeley.osm.xml"
-	sm := NewStreetMapFrom(fn, &NaiveNodeSet{}, &Trie{})
+	sm := NewStreetMapFrom(fn, &NaiveNodeSet{}, &NaiveNameDict{})
 	keys := sm.nd.keys()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		for _, key := range keys {
-			sm.nd.keysWithPrefix(key)
+			sm.getNodesByPrefix(key)
 		}
 	}
 }
@@ -85,7 +85,7 @@ func BenchmarkTrie(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		for _, key := range keys {
-			sm.nd.keysWithPrefix(key)
+			sm.getNodesByPrefix(key)
 		}
 	}
 }
