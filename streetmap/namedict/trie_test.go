@@ -11,25 +11,25 @@ func TestTrie(t *testing.T) {
 		trie := &Trie{}
 		strs := []string{"a", "awls", "sad", "sam", "same", "sap"}
 		for i, s := range strs {
-			trie.put(s, int64(i))
+			trie.Put(s, int64(i))
 		}
 
-		assertSliceEqual(t, trie.keysWithPrefix("sam"), []string{"sam", "same"})
-		assertSliceEqual(t, trie.keysWithPrefix("c"), []string{})
+		assertSliceEqual(t, trie.KeysWithPrefix("sam"), []string{"sam", "same"})
+		assertSliceEqual(t, trie.KeysWithPrefix("c"), []string{})
 	})
 
 	t.Run("chinese", func(t *testing.T) {
 		trie := &Trie{}
 		strs := []string{"中", "中国", "中国广西", "中国广东", "中国广东深圳"}
 		for i, s := range strs {
-			trie.put(s, int64(i))
+			trie.Put(s, int64(i))
 		}
 
 		for i, s := range strs {
-			assertNodeIdEqual(t, int64(i), trie.get(s))
+			assertNodeIdEqual(t, int64(i), trie.Get(s))
 		}
-		assertNodeIdEqual(t, -1, trie.get("美国"))
-		assertNodeIdEqual(t, -1, trie.get("中国广东深圳南山"))
+		assertNodeIdEqual(t, -1, trie.Get("美国"))
+		assertNodeIdEqual(t, -1, trie.Get("中国广东深圳南山"))
 	})
 
 }

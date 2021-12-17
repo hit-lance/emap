@@ -1,22 +1,34 @@
 package streetmap
 
+import (
+	"etaxi/streetmap/graph"
+
+	nd "etaxi/streetmap/namedict"
+	ns "etaxi/streetmap/nodeset"
+)
+
 type StreetMap struct {
-	*Graph
-	ns NodeSet
-	nd NameDict
+	*graph.Graph
+	ns.NodeSet
+	nd.NameDict
 }
 
-func NewStreetMapFrom(fn string, ns NodeSet, nd NameDict) *StreetMap {
+func NewStreetMap(fn string) *StreetMap {
+	return NewStreetMapFrom(fn, &ns.KDTree{}, &nd.Trie{})
+}
+
+func NewStreetMapFrom(fn string, ns ns.NodeSet, nd nd.NameDict) *StreetMap {
 	sm := StreetMap{}
-	sm.Graph = NewGraphFrom(fn)
-	sm.ns = ns
-	sm.nd = nd
-	for nid, n := range sm.nodes {
+	sm.Graph = graph.NewGraphFrom(fn)
+	sm.NodeSet = ns
+	sm.NameDict = nd
+	for _, nid := range sm.NodeIds() {
+		n := sm.GetNodeById(nid)
 		if sm.Neighbors(nid) != nil {
 			ns.Insert(n)
 		}
-		if n.name != "" {
-			sm.nd.put(n.name, n.id)
+		if n.Name() != "" {
+			sm.NameDict.Put(n.Name(), n.Id())
 		}
 	}
 
@@ -24,13 +36,13 @@ func NewStreetMapFrom(fn string, ns NodeSet, nd NameDict) *StreetMap {
 }
 
 func (sm *StreetMap) Closest(lat, lon float64) int64 {
-	return sm.ns.Nearest(&Node{lat: lat, lon: lon}).id
+	return sm.NodeSet.Nearest(graph.NewNode(lat, lon)).Id()
 }
 
-func (sm *StreetMap) getNodesByPrefix(name string) []string {
-	return sm.nd.keysWithPrefix(name)
+func (sm *StreetMap) GetNodesByPrefix(name string) []string {
+	return sm.NameDict.KeysWithPrefix(name)
 }
 
 func (sm *StreetMap) GetNodeIdByName(name string) int64 {
-	return sm.nd.get(name)
+	return sm.NameDict.Get(name)
 }

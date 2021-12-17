@@ -1,4 +1,4 @@
-package streetmap
+package graph
 
 import (
 	"testing"

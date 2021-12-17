@@ -1,6 +1,7 @@
 package streetmap
 
 import (
+	"etaxi/streetmap/graph"
 	"fmt"
 	"math"
 )
@@ -10,7 +11,7 @@ type KDTree struct {
 }
 
 type treeNode struct {
-	*Node
+	*graph.Node
 	left  *treeNode
 	right *treeNode
 }
@@ -29,15 +30,15 @@ func stringHelper(t *treeNode, s *string) {
 	stringHelper(t.right, s)
 }
 
-func (t *KDTree) Insert(n *Node) {
+func (t *KDTree) Insert(n *graph.Node) {
 	t.root = insertHelper(t.root, n, true)
 }
 
-func insertHelper(t *treeNode, n *Node, flag bool) *treeNode {
+func insertHelper(t *treeNode, n *graph.Node, flag bool) *treeNode {
 	if t == nil {
 		return &treeNode{n, nil, nil}
 	}
-	if (flag && n.lat < t.lat) || (!flag && n.lon < t.lon) {
+	if (flag && n.Lat() < t.Lat()) || (!flag && n.Lon() < t.Lon()) {
 		t.left = insertHelper(t.left, n, !flag)
 	} else {
 		t.right = insertHelper(t.right, n, !flag)
@@ -45,7 +46,7 @@ func insertHelper(t *treeNode, n *Node, flag bool) *treeNode {
 	return t
 }
 
-func (t *KDTree) Nearest(n *Node) (best *Node) {
+func (t *KDTree) Nearest(n *graph.Node) (best *graph.Node) {
 	if t.root == nil {
 		return
 	}
@@ -56,7 +57,7 @@ func (t *KDTree) Nearest(n *Node) (best *Node) {
 	return
 }
 
-func nearestHelper(t *treeNode, n *Node, best **Node, min *float64, flag bool) {
+func nearestHelper(t *treeNode, n *graph.Node, best **graph.Node, min *float64, flag bool) {
 	if t == nil {
 		return
 	}
@@ -70,20 +71,20 @@ func nearestHelper(t *treeNode, n *Node, best **Node, min *float64, flag bool) {
 	var goodSide, badSide *treeNode
 	var lat, lon float64
 
-	if (flag && n.lat < t.lat) || (!flag && n.lon < t.lon) {
+	if (flag && n.Lat() < t.Lat()) || (!flag && n.Lon() < t.Lon()) {
 		goodSide, badSide = t.left, t.right
 	} else {
 		goodSide, badSide = t.right, t.left
 	}
 
 	if flag {
-		lat, lon = t.lat, n.lon
+		lat, lon = t.Lat(), n.Lon()
 	} else {
-		lat, lon = n.lat, t.lon
+		lat, lon = n.Lat(), t.Lon()
 	}
 
 	nearestHelper(goodSide, n, best, min, !flag)
-	if n.Distance(&Node{lat: lat, lon: lon}) < *min {
+	if graph.Distance(lat, lon, n.Lat(), n.Lon()) < *min {
 		nearestHelper(badSide, n, best, min, !flag)
 	}
 }
