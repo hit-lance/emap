@@ -24,7 +24,7 @@ func TestRouter(t *testing.T) {
 	}
 
 	t.Run("dijkstra", func(t *testing.T) {
-		m := sm.NewStreetMapFrom(tinyOsmPath, &sm.KDTree{}, &sm.Trie{})
+		m := sm.NewStreetMap(tinyOsmPath)
 		r := Router{}
 		sol := r.ShortestPath(dijkstra, m, 38.1, 0.4, 38.6, 0.4)
 		want := list.New()
@@ -37,7 +37,7 @@ func TestRouter(t *testing.T) {
 	})
 
 	t.Run("dijkstra_large_scale", func(t *testing.T) {
-		m := sm.NewStreetMapFrom(berkeleyOsmPath, &sm.KDTree{}, &sm.Trie{})
+		m := sm.NewStreetMap(berkeleyOsmPath)
 		r := Router{}
 		for i := 0; i < testsNum; i++ {
 			sol := r.ShortestPath(dijkstra, m, testParas[i][0], testParas[i][1], testParas[i][2], testParas[i][3])
@@ -47,7 +47,7 @@ func TestRouter(t *testing.T) {
 	})
 
 	t.Run("astar", func(t *testing.T) {
-		m := sm.NewStreetMapFrom(tinyOsmPath, &sm.KDTree{}, &sm.Trie{})
+		m := sm.NewStreetMap(tinyOsmPath)
 		r := Router{}
 		sol := r.ShortestPath(aStar, m, 38.1, 0.4, 38.6, 0.4)
 
@@ -61,7 +61,7 @@ func TestRouter(t *testing.T) {
 	})
 
 	t.Run("astar_large_scale", func(t *testing.T) {
-		m := sm.NewStreetMapFrom(berkeleyOsmPath, &sm.KDTree{}, &sm.Trie{})
+		m := sm.NewStreetMap(berkeleyOsmPath)
 		r := Router{}
 		for i := 0; i < testsNum; i++ {
 			sol := r.ShortestPath(aStar, m, testParas[i][0], testParas[i][1], testParas[i][2], testParas[i][3])
@@ -125,7 +125,7 @@ func resultsFromFile(resultsPath string) (results []*list.List) {
 
 func BenchmarkDijkstra(b *testing.B) {
 	fn := "../data/berkeley.osm.xml"
-	m := sm.NewStreetMapFrom(fn, &sm.KDTree{}, &sm.Trie{})
+	m := sm.NewStreetMap(fn)
 	r := Router{}
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -135,7 +135,7 @@ func BenchmarkDijkstra(b *testing.B) {
 
 func BenchmarkAStar(b *testing.B) {
 	fn := "../data/berkeley.osm.xml"
-	m := sm.NewStreetMapFrom(fn, &sm.KDTree{}, &sm.Trie{})
+	m := sm.NewStreetMap(fn)
 	r := Router{}
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
