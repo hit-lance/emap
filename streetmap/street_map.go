@@ -23,7 +23,7 @@ func NewStreetMapFrom(fn string, ns ns.NodeSet, nd nd.NameDict) *StreetMap {
 	sm.NodeSet = ns
 	sm.NameDict = nd
 	for _, nid := range sm.NodeIds() {
-		n := sm.GetNodeByID(nid)
+		n := sm.GetNode(nid)
 		if sm.Neighbors(nid) != nil {
 			ns.Insert(n)
 		}

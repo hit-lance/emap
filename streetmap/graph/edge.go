@@ -23,3 +23,7 @@ func (e *Edge) V() int64 {
 func (e *Edge) Weight() float64 {
 	return e.weight
 }
+
+func (e *Edge) Name() string {
+	return e.name
+}

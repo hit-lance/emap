@@ -46,8 +46,17 @@ func (g *Graph) NodeIds() []int64 {
 	return nids
 }
 
-func (g *Graph) GetNodeByID(nid int64) *Node {
+func (g *Graph) GetNode(nid int64) *Node {
 	return g.nodes[nid]
+}
+
+func (g *Graph) GetEdge(u, v int64) *Edge {
+	for _, e := range g.Neighbors(u) {
+		if e.u == v || e.v == v {
+			return e
+		}
+	}
+	return nil
 }
 
 func (g *Graph) AddNode(n *Node) {
