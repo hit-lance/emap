@@ -20,7 +20,7 @@ func (r Router) ShortestPath(s solve, m *sm.StreetMap, slat, slon, dlat, dlon fl
 	return s(m, src, dst)
 }
 
-func (r Router) PrintRouteDirections(m *sm.StreetMap, route *list.List) {
+func (r Router) RouteDirections(m *sm.StreetMap, route *list.List) (res []NavigationDirection) {
 	if route == nil || route.Len() < 1 {
 		fmt.Fprintln(os.Stderr, "got wrong input route.")
 		os.Exit(1)
@@ -32,6 +32,7 @@ func (r Router) PrintRouteDirections(m *sm.StreetMap, route *list.List) {
 	for p := route.Front(); p.Next() != nil; p = p.Next() {
 		fmt.Println(m.GetEdge(p.Value.(int64), p.Next().Value.(int64)).Name())
 	}
+	return
 }
 
 func dijkstra(m *sm.StreetMap, src, dst int64) (sol *list.List) {

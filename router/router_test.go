@@ -71,10 +71,11 @@ func TestRouter(t *testing.T) {
 		}
 	})
 
-	t.Run("print_navigation_route", func(t *testing.T) {
+	t.Run("route_directions", func(t *testing.T) {
 		m := sm.NewStreetMap(beijingOsmPath)
 		r := Router{}
-		r.PrintRouteDirections(m, r.ShortestPath(aStar, m, 39.9322003, 116.3978560, 39.8868562, 116.4046622))
+		// 南锣鼓巷->天坛北门
+		r.RouteDirections(m, r.ShortestPath(aStar, m, 39.9322003, 116.3978560, 39.8868562, 116.4046622))
 	})
 }
 
