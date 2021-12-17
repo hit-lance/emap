@@ -11,6 +11,7 @@ import (
 func TestRouter(t *testing.T) {
 	tinyOsmPath := "../data/tiny-clean.osm.xml"
 	berkeleyOsmPath := "../data/berkeley.osm.xml"
+	beijingOsmPath := "../data/beijing.osm.xml"
 
 	paramsPath := "../data/path_params.txt"
 	resultsPath := "../data/path_results.txt"
@@ -70,6 +71,11 @@ func TestRouter(t *testing.T) {
 		}
 	})
 
+	t.Run("print_navigation_route", func(t *testing.T) {
+		m := sm.NewStreetMap(beijingOsmPath)
+		r := Router{}
+		r.PrintRouteDirections(m, r.ShortestPath(aStar, m, 39.9322003, 116.3978560, 39.8868562, 116.4046622))
+	})
 }
 
 func assertListEqual(t testing.TB, got *list.List, want *list.List) {

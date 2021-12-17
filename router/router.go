@@ -20,6 +20,20 @@ func (r Router) ShortestPath(s solve, m *sm.StreetMap, slat, slon, dlat, dlon fl
 	return s(m, src, dst)
 }
 
+func (r Router) PrintRouteDirections(m *sm.StreetMap, route *list.List) {
+	if route == nil || route.Len() < 1 {
+		fmt.Fprintln(os.Stderr, "got wrong input route.")
+		os.Exit(1)
+	}
+	if route.Len() == 1 {
+		return
+	}
+
+	for p := route.Front(); p.Next() != nil; p = p.Next() {
+		fmt.Println(m.GetEdge(p.Value.(int64), p.Next().Value.(int64)).Name())
+	}
+}
+
 func dijkstra(m *sm.StreetMap, src, dst int64) (sol *list.List) {
 	if !m.Contains(src) {
 		fmt.Fprintf(os.Stderr, "node id %d doesn't exist", src)
@@ -96,7 +110,7 @@ func aStar(m *sm.StreetMap, src, dst int64) (sol *list.List) {
 		}
 	}
 
-	heuristic[src] = m.GetNodeByID(src).Distance(m.GetNodeByID(dst))
+	heuristic[src] = m.GetNode(src).Distance(m.GetNode(dst))
 	item := &Item{value: src, priority: heuristic[src]}
 	heap.Push(&pq, item)
 	itemPtrs[src] = item
@@ -128,7 +142,7 @@ func aStar(m *sm.StreetMap, src, dst int64) (sol *list.List) {
 				edgeTo[q] = p
 
 				if _, ok := heuristic[q]; !ok {
-					heuristic[q] = m.GetNodeByID(q).Distance(m.GetNodeByID(dst))
+					heuristic[q] = m.GetNode(q).Distance(m.GetNode(dst))
 				}
 
 				if ptr, ok := itemPtrs[q]; ok {
