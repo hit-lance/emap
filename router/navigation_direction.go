@@ -1,6 +1,9 @@
 package router
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 type DirectionType int
 
@@ -15,10 +18,25 @@ const (
 	SharpRight
 )
 
+var DirectionText = map[DirectionType]string{
+	Start:       "从起点出发",
+	Straight:    "直行",
+	SlightLeft:  "向左前方行驶",
+	SlightRight: "向右前方行驶",
+	Left:        "左转",
+	Right:       "右转",
+	SharpLeft:   "向左后方行驶",
+	SharpRight:  "向右后方行驶",
+}
+
 type NavigationDirection struct {
 	direction DirectionType
 	way       string
 	distance  float64
+}
+
+func (nd NavigationDirection) String() string {
+	return fmt.Sprintf("%s，进入*%s*，继续前行%.3f公里", DirectionText[nd.direction], nd.way, nd.distance)
 }
 
 func getDirection(prevBearing, curBearing float64) DirectionType {

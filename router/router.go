@@ -20,13 +20,23 @@ func (r Router) ShortestPath(s solve, m *sm.StreetMap, slat, slon, dlat, dlon fl
 	return s(m, src, dst)
 }
 
-func (r Router) RouteDirections(m *sm.StreetMap, route *list.List) (rd []NavigationDirection) {
+func GetDirectionsText(nd []NavigationDirection) (s string) {
+	dist := 0.0
+	for _, d := range nd {
+		dist += d.distance
+	}
+	s += fmt.Sprintf("全程%.3f公里\n", dist)
+	for _, d := range nd {
+		s += fmt.Sprintln(d)
+	}
+	s += fmt.Sprintln("到达目的地")
+	return
+}
+
+func (r Router) RouteDirections(m *sm.StreetMap, route *list.List) (nd []NavigationDirection) {
 	if route == nil || route.Len() < 1 {
 		fmt.Fprintln(os.Stderr, "got wrong input route.")
 		os.Exit(1)
-	}
-	if route.Len() == 1 {
-		return
 	}
 
 	p := route.Front()
@@ -42,7 +52,7 @@ func (r Router) RouteDirections(m *sm.StreetMap, route *list.List) (rd []Navigat
 		if p == route.Front() {
 			direction = Start
 			if way.Name() == "" {
-				prevWayName = "未命名道路"
+				prevWayName = "无名道路"
 			} else {
 				prevWayName = way.Name()
 			}
@@ -51,10 +61,10 @@ func (r Router) RouteDirections(m *sm.StreetMap, route *list.List) (rd []Navigat
 			if way.Name() == prevWayName {
 				distance += way.Weight()
 			} else {
-				rd = append(rd, NavigationDirection{direction: direction, way: prevWayName, distance: distance})
+				nd = append(nd, NavigationDirection{direction: direction, way: prevWayName, distance: distance})
 				direction = getDirection(prevBearing, curBearing)
 				if way.Name() == "" {
-					prevWayName = "未命名道路"
+					prevWayName = "无名道路"
 				} else {
 					prevWayName = way.Name()
 				}
@@ -62,15 +72,13 @@ func (r Router) RouteDirections(m *sm.StreetMap, route *list.List) (rd []Navigat
 			}
 		}
 		if p.Next().Next() == nil {
-			rd = append(rd, NavigationDirection{direction: direction, way: prevWayName, distance: distance})
+			nd = append(nd, NavigationDirection{direction: direction, way: prevWayName, distance: distance})
 			break
 		}
 		prevBearing = curBearing
 		p = p.Next()
 
 	}
-
-	fmt.Println(rd)
 	return
 }
 
