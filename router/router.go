@@ -20,7 +20,7 @@ func (r Router) ShortestPath(s solve, m *sm.StreetMap, slat, slon, dlat, dlon fl
 	return s(m, src, dst)
 }
 
-func (r Router) RouteDirections(m *sm.StreetMap, route *list.List) (res []NavigationDirection) {
+func (r Router) RouteDirections(m *sm.StreetMap, route *list.List) (rd []NavigationDirection) {
 	if route == nil || route.Len() < 1 {
 		fmt.Fprintln(os.Stderr, "got wrong input route.")
 		os.Exit(1)
@@ -29,19 +29,25 @@ func (r Router) RouteDirections(m *sm.StreetMap, route *list.List) (res []Naviga
 		return
 	}
 
-	// direction := Start
-	// // pre := route.Front()
-	// preWay := m.GetEdge(route.Front().Value.(int64), route.Front().Next().Value.(int64))
+	p := route.Front()
+	cur, next := p.Value.(int64), p.Next().Value.(int64)
+	way := m.GetEdge(cur, next)
+	rd = append(rd, NavigationDirection{direction: Start, way: way.Name(), distance: way.Weight()})
+	prevBearing := m.GetNode(cur).Bearing(m.GetNode(next))
+	p = p.Next()
 
-	// for p := route.Front().Next(); p != nil; p = p.Next() {
-	// 	cur, next := p.Value.(int64), p.Next().Value.(int64)
-	// 	curWay := m.GetEdge(cur,next)
-	// 	// e:=m.GetEdge(cur,next)
-	// 	// fmt.Println(m.GetEdge(p.Value.(int64), p.Next().Value.(int64)).Name())
-	// }
-	for p := route.Front(); p.Next() != nil; p = p.Next() {
-		fmt.Println(m.GetEdge(p.Value.(int64), p.Next().Value.(int64)).Name())
+	for ; p.Next() != nil; p = p.Next() {
+		cur, next = p.Value.(int64), p.Next().Value.(int64)
+		way = m.GetEdge(cur, next)
+		curBearing := m.GetNode(cur).Bearing(m.GetNode(next))
+		direction := getDirection(prevBearing, curBearing)
+		rd = append(rd, NavigationDirection{direction: direction, way: way.Name(), distance: way.Weight()})
+		prevBearing = curBearing
 	}
+	// for p := route.Front(); p.Next() != nil; p = p.Next() {
+	// 	fmt.Println(m.GetEdge(p.Value.(int64), p.Next().Value.(int64)).Name())
+	// }
+	fmt.Println(rd)
 	return
 }
 
