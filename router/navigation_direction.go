@@ -35,8 +35,13 @@ type NavigationDirection struct {
 	distance  float64
 }
 
-func (nd NavigationDirection) String() string {
-	return fmt.Sprintf("%s，进入*%s*，继续前行%.3f公里", DirectionText[nd.direction], nd.way, nd.distance)
+func (nd NavigationDirection) String() (s string) {
+	if nd.way != "" {
+		s = fmt.Sprintf("%s，进入*%s*，继续前行%.3f公里", DirectionText[nd.direction], nd.way, nd.distance)
+	} else {
+		s = fmt.Sprintf("%s，继续前行%.3f公里", DirectionText[nd.direction], nd.distance)
+	}
+	return
 }
 
 func getDirection(prevBearing, curBearing float64) DirectionType {

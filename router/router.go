@@ -51,23 +51,15 @@ func (r Router) RouteDirections(m *sm.StreetMap, route *list.List) (nd []Navigat
 
 		if p == route.Front() {
 			direction = Start
-			if way.Name() == "" {
-				prevWayName = "无名道路"
-			} else {
-				prevWayName = way.Name()
-			}
+			prevWayName = way.Name()
 			distance = way.Weight()
 		} else {
-			if way.Name() == prevWayName {
+			if prevWayName != "" && way.Name() == prevWayName {
 				distance += way.Weight()
 			} else {
 				nd = append(nd, NavigationDirection{direction: direction, way: prevWayName, distance: distance})
 				direction = getDirection(prevBearing, curBearing)
-				if way.Name() == "" {
-					prevWayName = "无名道路"
-				} else {
-					prevWayName = way.Name()
-				}
+				prevWayName = way.Name()
 				distance = way.Weight()
 			}
 		}
