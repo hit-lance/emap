@@ -30,23 +30,38 @@ func (r Router) RouteDirections(m *sm.StreetMap, route *list.List) (rd []Navigat
 	}
 
 	p := route.Front()
-	cur, next := p.Value.(int64), p.Next().Value.(int64)
-	way := m.GetEdge(cur, next)
-	rd = append(rd, NavigationDirection{direction: Start, way: way.Name(), distance: way.Weight()})
-	prevBearing := m.GetNode(cur).Bearing(m.GetNode(next))
-	p = p.Next()
+	var direction DirectionType
+	var distance, prevBearing float64
+	var prevWayName string
 
-	for ; p.Next() != nil; p = p.Next() {
-		cur, next = p.Value.(int64), p.Next().Value.(int64)
-		way = m.GetEdge(cur, next)
+	for {
+		cur, next := p.Value.(int64), p.Next().Value.(int64)
+		way := m.GetEdge(cur, next)
 		curBearing := m.GetNode(cur).Bearing(m.GetNode(next))
-		direction := getDirection(prevBearing, curBearing)
-		rd = append(rd, NavigationDirection{direction: direction, way: way.Name(), distance: way.Weight()})
+
+		if p == route.Front() {
+			direction = Start
+			distance = way.Weight()
+			prevWayName = way.Name()
+		} else {
+			if way.Name() == prevWayName {
+				distance += way.Weight()
+			} else {
+				rd = append(rd, NavigationDirection{direction: direction, way: prevWayName, distance: distance})
+				direction = getDirection(prevBearing, curBearing)
+				distance = way.Weight()
+				prevWayName = way.Name()
+			}
+		}
+		if p.Next().Next() == nil {
+			rd = append(rd, NavigationDirection{direction: direction, way: prevWayName, distance: distance})
+			break
+		}
 		prevBearing = curBearing
+		p = p.Next()
+
 	}
-	// for p := route.Front(); p.Next() != nil; p = p.Next() {
-	// 	fmt.Println(m.GetEdge(p.Value.(int64), p.Next().Value.(int64)).Name())
-	// }
+
 	fmt.Println(rd)
 	return
 }
