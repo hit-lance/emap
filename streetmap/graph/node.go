@@ -58,32 +58,3 @@ func Distance(lat1, lon1, lat2, lon2 float64) float64 {
 
 	return earthRadius * c
 }
-
-// func Distance(n1, n2 *Node) float64 {
-// 	const earthRadius = 6371
-
-// 	phi1 := (n2.lat - n1.lat) * (math.Pi / 180.0)
-// 	phi2 := (n2.lon - n1.lon) * (math.Pi / 180.0)
-// 	dphi := n1.lat * (math.Pi / 180.0)
-// 	dlamda := n2.lat * (math.Pi / 180.0)
-
-// 	a1 := math.Sin(phi1/2) * math.Sin(phi1/2)
-// 	a2 := math.Sin(phi2/2) * math.Sin(phi2/2) * math.Cos(dphi) * math.Cos(dlamda)
-// 	a := a1 + a2
-// 	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
-
-// 	return earthRadius * c
-// }
-
-// // Returns the initial bearing (angle) between vertices v and w in degrees.
-// // Refer from https://www.movable-type.co.uk/scripts/latlong.html
-// func bearing(lat1, lon1, lat2, lon2 float64) float64 {
-// 	dlambda := (lon2 - lon1) * math.Pi / 180.0
-// 	phi1 := lat1 * math.Pi / 180.0
-// 	phi2 := lat2 * math.Pi / 180.0
-
-// 	y := math.Sin(dlambda) * math.Cos(phi2)
-// 	x := math.Cos(phi1)*math.Sin(phi2) -
-// 		math.Sin(phi1)*math.Cos(phi2)*math.Cos(dlambda)
-// 	return math.Atan2(y, x) * 180.0 / math.Pi
-// }
