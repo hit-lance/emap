@@ -41,16 +41,24 @@ func (r Router) RouteDirections(m *sm.StreetMap, route *list.List) (rd []Navigat
 
 		if p == route.Front() {
 			direction = Start
+			if way.Name() == "" {
+				prevWayName = "未命名道路"
+			} else {
+				prevWayName = way.Name()
+			}
 			distance = way.Weight()
-			prevWayName = way.Name()
 		} else {
 			if way.Name() == prevWayName {
 				distance += way.Weight()
 			} else {
 				rd = append(rd, NavigationDirection{direction: direction, way: prevWayName, distance: distance})
 				direction = getDirection(prevBearing, curBearing)
+				if way.Name() == "" {
+					prevWayName = "未命名道路"
+				} else {
+					prevWayName = way.Name()
+				}
 				distance = way.Weight()
-				prevWayName = way.Name()
 			}
 		}
 		if p.Next().Next() == nil {
