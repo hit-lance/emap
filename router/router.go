@@ -29,6 +29,16 @@ func (r Router) RouteDirections(m *sm.StreetMap, route *list.List) (res []Naviga
 		return
 	}
 
+	// direction := Start
+	// // pre := route.Front()
+	// preWay := m.GetEdge(route.Front().Value.(int64), route.Front().Next().Value.(int64))
+
+	// for p := route.Front().Next(); p != nil; p = p.Next() {
+	// 	cur, next := p.Value.(int64), p.Next().Value.(int64)
+	// 	curWay := m.GetEdge(cur,next)
+	// 	// e:=m.GetEdge(cur,next)
+	// 	// fmt.Println(m.GetEdge(p.Value.(int64), p.Next().Value.(int64)).Name())
+	// }
 	for p := route.Front(); p.Next() != nil; p = p.Next() {
 		fmt.Println(m.GetEdge(p.Value.(int64), p.Next().Value.(int64)).Name())
 	}
@@ -74,13 +84,8 @@ func dijkstra(m *sm.StreetMap, src, dst int64) (sol *list.List) {
 		}
 
 		p := item.value
-		for _, nbr := range m.Neighbors(item.value) {
-			var q int64
-			if p == nbr.U() {
-				q = nbr.V()
-			} else {
-				q = nbr.U()
-			}
+		for _, nbr := range m.Neighbors(p) {
+			q := nbr.To()
 			if item.priority+nbr.Weight() < distTo[q] {
 				distTo[q] = item.priority + nbr.Weight()
 				edgeTo[q] = p
@@ -130,13 +135,8 @@ func aStar(m *sm.StreetMap, src, dst int64) (sol *list.List) {
 		}
 
 		p := item.value
-		for _, nbr := range m.Neighbors(item.value) {
-			var q int64
-			if p == nbr.U() {
-				q = nbr.V()
-			} else {
-				q = nbr.U()
-			}
+		for _, nbr := range m.Neighbors(p) {
+			q := nbr.To()
 
 			if distTo[p]+nbr.Weight() < distTo[q] {
 				distTo[q] = distTo[p] + nbr.Weight()

@@ -50,9 +50,9 @@ func (g *Graph) GetNode(nid int64) *Node {
 	return g.nodes[nid]
 }
 
-func (g *Graph) GetEdge(u, v int64) *Edge {
-	for _, e := range g.Neighbors(u) {
-		if e.u == v || e.v == v {
+func (g *Graph) GetEdge(from, to int64) *Edge {
+	for _, e := range g.Neighbors(from) {
+		if e.to == to {
 			return e
 		}
 	}
@@ -65,13 +65,12 @@ func (g *Graph) AddNode(n *Node) {
 	}
 }
 
-func (g *Graph) AddEdge(nid1, nid2 int64, name string) {
-	n1, ok1 := g.nodes[nid1]
-	n2, ok2 := g.nodes[nid2]
+func (g *Graph) AddEdge(nidFrom, nidTo int64, name string) {
+	n1, ok1 := g.nodes[nidFrom]
+	n2, ok2 := g.nodes[nidTo]
 	if ok1 && ok2 {
-		e := Edge{nid1, nid2, n1.Distance(n2), name}
-		g.neighbors[nid1] = append(g.neighbors[nid1], &e)
-		g.neighbors[nid2] = append(g.neighbors[nid2], &e)
+		e := Edge{nidFrom, nidTo, n1.Distance(n2), name}
+		g.neighbors[nidFrom] = append(g.neighbors[nidFrom], &e)
 	}
 }
 

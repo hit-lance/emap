@@ -21,8 +21,29 @@ type NavigationDirection struct {
 	distance  int64
 }
 
-func getDirection(prevBearing, curBearing float64) (dt DirectionType) {
-	return
+func getDirection(prevBearing, curBearing float64) DirectionType {
+	absDiff := math.Abs(curBearing - prevBearing)
+	if absDiff <= 15.0 {
+		return Start
+	}
+
+	if (curBearing > prevBearing && absDiff < 180.0) || (curBearing < prevBearing && absDiff > 180.0) {
+		if absDiff < 30.0 || absDiff > 330.0 {
+			return SlightRight
+		}
+		if absDiff < 100.0 || absDiff > 260.0 {
+			return Right
+		}
+		return SharpRight
+	} else {
+		if absDiff < 30.0 || absDiff > 330.0 {
+			return SlightLeft
+		}
+		if absDiff < 100.0 || absDiff > 260.0 {
+			return Left
+		}
+		return SharpLeft
+	}
 }
 
 // Returns the initial bearing (angle) between vertices v and w in degrees.

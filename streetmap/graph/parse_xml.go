@@ -68,6 +68,7 @@ func parseXML(g *Graph, r io.Reader) {
 				if _, ok := allowedHighwayTypes[s.wayType]; ok {
 					for i := 0; i < len(s.nids)-1; i++ {
 						g.AddEdge(s.nids[i], s.nids[i+1], s.wayName)
+						g.AddEdge(s.nids[i+1], s.nids[i], s.wayName)
 					}
 				}
 				s = states{}

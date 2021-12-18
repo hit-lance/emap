@@ -15,7 +15,7 @@ func TestGraph(t *testing.T) {
 		g.AddEdge(1, 2, "ab")
 
 		got := *g.Neighbors(1)[0]
-		want := Edge{u: 1, v: 2, weight: 422.7592707099526, name: "ab"}
+		want := Edge{from: 1, to: 2, weight: 422.7592707099526, name: "ab"}
 		if got != want {
 			t.Errorf("got %+v sent but expected %+v", got, want)
 		}
