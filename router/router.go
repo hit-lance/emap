@@ -9,69 +9,20 @@ import (
 	"os"
 )
 
-type solve func(m *sm.StreetMap, src, dst int64) *list.List
-
-type Router struct {
+type Solver interface {
+	ShortestPath(m *sm.StreetMap, src, dst int64) (sol *list.List)
 }
 
-func (r Router) ShortestPath(s solve, m *sm.StreetMap, slat, slon, dlat, dlon float64) *list.List {
+type SolverFunc func(m *sm.StreetMap, src, dst int64) *list.List
+
+func (f SolverFunc) ShortestPath(m *sm.StreetMap, src, dst int64) (sol *list.List) {
+	return f(m, src, dst)
+}
+
+func ShortestPath(s Solver, m *sm.StreetMap, slat, slon, dlat, dlon float64) *list.List {
 	src := m.Closest(slat, slon)
 	dst := m.Closest(dlat, dlon)
-	return s(m, src, dst)
-}
-
-func GetDirectionsText(nd []NavigationDirection) (s string) {
-	dist := 0.0
-	for _, d := range nd {
-		dist += d.distance
-	}
-	s += fmt.Sprintf("全程%.3f公里\n", dist)
-	for _, d := range nd {
-		s += fmt.Sprintln(d)
-	}
-	s += fmt.Sprintln("到达目的地")
-	return
-}
-
-func (r Router) RouteDirections(m *sm.StreetMap, route *list.List) (nd []NavigationDirection) {
-	if route == nil || route.Len() < 1 {
-		fmt.Fprintln(os.Stderr, "got wrong input route.")
-		os.Exit(1)
-	}
-
-	p := route.Front()
-	var direction DirectionType
-	var distance, prevBearing float64
-	var prevWayName string
-
-	for {
-		cur, next := p.Value.(int64), p.Next().Value.(int64)
-		way := m.GetEdge(cur, next)
-		curBearing := m.GetNode(cur).Bearing(m.GetNode(next))
-
-		if p == route.Front() {
-			direction = Start
-			prevWayName = way.Name()
-			distance = way.Weight()
-		} else {
-			if prevWayName != "" && way.Name() == prevWayName {
-				distance += way.Weight()
-			} else {
-				nd = append(nd, NavigationDirection{direction: direction, way: prevWayName, distance: distance})
-				direction = getDirection(prevBearing, curBearing)
-				prevWayName = way.Name()
-				distance = way.Weight()
-			}
-		}
-		if p.Next().Next() == nil {
-			nd = append(nd, NavigationDirection{direction: direction, way: prevWayName, distance: distance})
-			break
-		}
-		prevBearing = curBearing
-		p = p.Next()
-
-	}
-	return
+	return s.ShortestPath(m, src, dst)
 }
 
 func dijkstra(m *sm.StreetMap, src, dst int64) (sol *list.List) {
@@ -184,6 +135,60 @@ func aStar(m *sm.StreetMap, src, dst int64) (sol *list.List) {
 				}
 			}
 		}
+	}
+	return
+}
+
+func GetDirectionsText(nd []NavigationDirection) (s string) {
+	dist := 0.0
+	for _, d := range nd {
+		dist += d.distance
+	}
+	s += fmt.Sprintf("全程%.3f公里\n", dist)
+	for _, d := range nd {
+		s += fmt.Sprintln(d)
+	}
+	s += fmt.Sprintln("到达目的地")
+	return
+}
+
+func RouteDirections(m *sm.StreetMap, route *list.List) (nd []NavigationDirection) {
+	if route == nil || route.Len() < 1 {
+		fmt.Fprintln(os.Stderr, "got wrong input route.")
+		os.Exit(1)
+	}
+
+	p := route.Front()
+	var direction DirectionType
+	var distance, prevBearing float64
+	var prevWayName string
+
+	for {
+		cur, next := p.Value.(int64), p.Next().Value.(int64)
+		way := m.GetEdge(cur, next)
+		curBearing := m.GetNode(cur).Bearing(m.GetNode(next))
+
+		if p == route.Front() {
+			direction = Start
+			prevWayName = way.Name()
+			distance = way.Weight()
+		} else {
+			if prevWayName != "" && way.Name() == prevWayName {
+				distance += way.Weight()
+			} else {
+				nd = append(nd, NavigationDirection{direction: direction, way: prevWayName, distance: distance})
+				direction = getDirection(prevBearing, curBearing)
+				prevWayName = way.Name()
+				distance = way.Weight()
+			}
+		}
+		if p.Next().Next() == nil {
+			nd = append(nd, NavigationDirection{direction: direction, way: prevWayName, distance: distance})
+			break
+		}
+		prevBearing = curBearing
+		p = p.Next()
+
 	}
 	return
 }

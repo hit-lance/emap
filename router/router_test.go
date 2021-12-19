@@ -24,10 +24,10 @@ func TestRouter(t *testing.T) {
 		os.Exit(1)
 	}
 
-	t.Run("dijkstra", func(t *testing.T) {
+	t.Run("SolverFunc(dijkstra)", func(t *testing.T) {
 		m := sm.NewStreetMap(tinyOsmPath)
-		r := Router{}
-		sol := r.ShortestPath(dijkstra, m, 38.1, 0.4, 38.6, 0.4)
+
+		sol := ShortestPath(SolverFunc(dijkstra), m, 38.1, 0.4, 38.6, 0.4)
 		want := list.New()
 		want.PushBack(int64(41))
 		want.PushBack(int64(63))
@@ -39,9 +39,9 @@ func TestRouter(t *testing.T) {
 
 	t.Run("dijkstra_large_scale", func(t *testing.T) {
 		m := sm.NewStreetMap(berkeleyOsmPath)
-		r := Router{}
+
 		for i := 0; i < testsNum; i++ {
-			sol := r.ShortestPath(dijkstra, m, testParas[i][0], testParas[i][1], testParas[i][2], testParas[i][3])
+			sol := ShortestPath(SolverFunc(dijkstra), m, testParas[i][0], testParas[i][1], testParas[i][2], testParas[i][3])
 			want := expectedResults[i]
 			assertListEqual(t, sol, want)
 		}
@@ -49,8 +49,8 @@ func TestRouter(t *testing.T) {
 
 	t.Run("astar", func(t *testing.T) {
 		m := sm.NewStreetMap(tinyOsmPath)
-		r := Router{}
-		sol := r.ShortestPath(aStar, m, 38.1, 0.4, 38.6, 0.4)
+
+		sol := ShortestPath(SolverFunc(aStar), m, 38.1, 0.4, 38.6, 0.4)
 
 		want := list.New()
 		want.PushBack(int64(41))
@@ -63,9 +63,9 @@ func TestRouter(t *testing.T) {
 
 	t.Run("astar_large_scale", func(t *testing.T) {
 		m := sm.NewStreetMap(berkeleyOsmPath)
-		r := Router{}
+
 		for i := 0; i < testsNum; i++ {
-			sol := r.ShortestPath(aStar, m, testParas[i][0], testParas[i][1], testParas[i][2], testParas[i][3])
+			sol := ShortestPath(SolverFunc(aStar), m, testParas[i][0], testParas[i][1], testParas[i][2], testParas[i][3])
 			want := expectedResults[i]
 			assertListEqual(t, sol, want)
 		}
@@ -73,9 +73,9 @@ func TestRouter(t *testing.T) {
 
 	t.Run("route_directions", func(t *testing.T) {
 		m := sm.NewStreetMap(beijingOsmPath)
-		r := Router{}
+
 		// 南锣鼓巷->天坛北门
-		rd := r.RouteDirections(m, r.ShortestPath(aStar, m, 39.9322003, 116.3978560, 39.8868562, 116.4046622))
+		rd := RouteDirections(m, ShortestPath(SolverFunc(aStar), m, 39.9322003, 116.3978560, 39.8868562, 116.4046622))
 		fmt.Print(GetDirectionsText(rd))
 	})
 }
@@ -134,19 +134,19 @@ func resultsFromFile(resultsPath string) (results []*list.List) {
 func BenchmarkDijkstra(b *testing.B) {
 	fn := "../data/berkeley.osm.xml"
 	m := sm.NewStreetMap(fn)
-	r := Router{}
+
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		r.ShortestPath(dijkstra, m, 37.87383979834944, -122.23354274523257, 37.86020837234193, -122.23307272570244)
+		ShortestPath(SolverFunc(dijkstra), m, 37.87383979834944, -122.23354274523257, 37.86020837234193, -122.23307272570244)
 	}
 }
 
 func BenchmarkAStar(b *testing.B) {
 	fn := "../data/berkeley.osm.xml"
 	m := sm.NewStreetMap(fn)
-	r := Router{}
+
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		r.ShortestPath(aStar, m, 37.87383979834944, -122.23354274523257, 37.86020837234193, -122.23307272570244)
+		ShortestPath(SolverFunc(aStar), m, 37.87383979834944, -122.23354274523257, 37.86020837234193, -122.23307272570244)
 	}
 }
