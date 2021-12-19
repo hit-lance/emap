@@ -13,8 +13,8 @@ type Node struct {
 	name     string
 }
 
-func NewNode(lat, lon float64) *Node {
-	return &Node{id: InvalidNodeID, lat: lat, lon: lon}
+func NewNode(id int64, lat, lon float64, name string) *Node {
+	return &Node{id: InvalidNodeID, lat: lat, lon: lon, name: name}
 }
 
 func (n *Node) String() string {
