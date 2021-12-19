@@ -39,8 +39,12 @@ func (sm *StreetMap) Closest(lat, lon float64) int64 {
 	return sm.NodeSet.Nearest(graph.NewNode(lat, lon)).ID()
 }
 
-func (sm *StreetMap) GetNodesByPrefix(name string) []string {
+func (sm *StreetMap) GetLocationsByPrefix(name string) []string {
 	return sm.NameDict.KeysWithPrefix(name)
+}
+
+func (sm *StreetMap) GetNodeIDByPrefix(name string) []int64 {
+	return sm.NameDict.ValsWithPrefix(name)
 }
 
 func (sm *StreetMap) GetNodeIDByName(name string) []int64 {

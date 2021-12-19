@@ -69,3 +69,25 @@ func collect(t *trieNode, pre string, s *[]string) {
 		collect(n, pre+string(r), s)
 	}
 }
+
+func (t *Trie) Vals() []int64 {
+	return t.ValsWithPrefix("")
+}
+
+func (t *Trie) ValsWithPrefix(pre string) []int64 {
+	s := []int64{}
+	collectVal(getHelper(t.root, []rune(pre), 0), &s)
+	return s
+}
+
+func collectVal(t *trieNode, s *[]int64) {
+	if t == nil {
+		return
+	}
+	if len(*t.val) != 0 {
+		*s = append(*s, *t.val...)
+	}
+	for _, n := range t.next {
+		collectVal(n, s)
+	}
+}

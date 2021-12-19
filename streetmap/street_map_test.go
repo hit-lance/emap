@@ -4,6 +4,7 @@ import (
 	nd "etaxi/streetmap/namedict"
 	ns "etaxi/streetmap/nodeset"
 	"reflect"
+	"sort"
 	"testing"
 )
 
@@ -41,6 +42,7 @@ func TestStreetMap(t *testing.T) {
 		if got != want {
 			t.Errorf("got %d but expected %d", got, want)
 		}
+		assertSliceEqual(t, smKDtreeTrie.GetNodeIDByPrefix("Monte"), []int64{2058708419, 440605038, 440605041, 343611005, 2838479530})
 		assertSliceEqual(t, smKDtreeTrie.GetNodeIDByName("Starbucks Coffee"), []int64{1467717295, 343610934})
 	})
 }
@@ -54,6 +56,9 @@ func assertNodeIDEqual(t testing.TB, got, want int64) {
 
 func assertSliceEqual(t testing.TB, got, want []int64) {
 	t.Helper()
+	sort.Slice(got, func(i, j int) bool { return got[i] < got[j] })
+	sort.Slice(want, func(i, j int) bool { return want[i] < want[j] })
+
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %v but expected %v", got, want)
 	}
@@ -84,7 +89,7 @@ func BenchmarkNaiveNameDict(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		for _, key := range keys {
-			sm.GetNodesByPrefix(key)
+			sm.GetLocationsByPrefix(key)
 		}
 	}
 }
@@ -96,7 +101,7 @@ func BenchmarkTrie(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		for _, key := range keys {
-			sm.GetNodesByPrefix(key)
+			sm.GetLocationsByPrefix(key)
 		}
 	}
 }

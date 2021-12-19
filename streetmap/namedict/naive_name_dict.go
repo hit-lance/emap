@@ -34,3 +34,15 @@ func (nnd NaiveNameDict) KeysWithPrefix(pre string) []string {
 	}
 	return s
 }
+
+func (nnd NaiveNameDict) ValsWithPrefix(pre string) []int64 {
+	s := []int64{}
+	for k, v := range nnd {
+		if strings.HasPrefix(k, pre) {
+			for i := range *v {
+				s = append(s, (*v)[i])
+			}
+		}
+	}
+	return s
+}

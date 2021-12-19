@@ -5,4 +5,5 @@ type NameDict interface {
 	Get(s string) []int64
 	Keys() []string
 	KeysWithPrefix(pre string) []string
+	ValsWithPrefix(pre string) []int64
 }
