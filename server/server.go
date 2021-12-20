@@ -55,7 +55,20 @@ func (t *TaxiServer) locationsHandler(w http.ResponseWriter, r *http.Request) {
 	if s == "" {
 		m, _ := url.ParseQuery(r.URL.RawQuery)
 		if v, ok := m["name"]; ok {
-			res := map[string][]int64{"node_ids": t.GetNodeIDByPrefix(v[0])}
+			var res []struct {
+				ID   int64  `json:"id"`
+				Name string `json:"name"`
+			}
+			locNames := t.GetLocationsByPrefix(v[0])
+			for _, ln := range locNames {
+				ids := t.Get(ln)
+				for _, id := range ids {
+					res = append(res, struct {
+						ID   int64  `json:"id"`
+						Name string `json:"name"`
+					}{ID: id, Name: ln})
+				}
+			}
 			w.Header().Set("content-type", "application/json")
 			json.NewEncoder(w).Encode(&res)
 			w.WriteHeader(http.StatusOK)
