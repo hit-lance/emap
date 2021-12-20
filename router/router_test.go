@@ -75,8 +75,7 @@ func TestRouter(t *testing.T) {
 		m := sm.NewStreetMap(beijingOsmPath)
 
 		// 南锣鼓巷->天坛北门
-		rd := RouteDirections(m, ShortestPath(SolverFunc(aStar), m, 39.9322003, 116.3978560, 39.8868562, 116.4046622))
-		fmt.Print(GetDirectionsText(rd))
+		fmt.Print(GetDirectionsText(m, Navigate(m, 39.9322003, 116.3978560, 39.8868562, 116.4046622)))
 	})
 }
 
