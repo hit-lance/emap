@@ -46,45 +46,45 @@ func insertHelper(t *treeNode, n *graph.Node, flag bool) *treeNode {
 	return t
 }
 
-func (t *KDTree) Nearest(n *graph.Node) (best *graph.Node) {
+func (t *KDTree) Nearest(lat, lon float64) (best *graph.Node) {
 	if t.root == nil {
 		return
 	}
 
 	best = t.root.Node
 	min := math.MaxFloat64
-	nearestHelper(t.root, n, &best, &min, true)
+	nearestHelper(t.root, lat, lon, &best, &min, true)
 	return
 }
 
-func nearestHelper(t *treeNode, n *graph.Node, best **graph.Node, min *float64, flag bool) {
+func nearestHelper(t *treeNode, lat, lon float64, best **graph.Node, min *float64, flag bool) {
 	if t == nil {
 		return
 	}
 
-	dis := n.Distance(t.Node)
+	dis := graph.Distance(lat, lon, t.Lat(), t.Lon())
 	if dis < *min {
 		*min = dis
 		*best = t.Node
 	}
 
 	var goodSide, badSide *treeNode
-	var lat, lon float64
+	var x, y float64
 
-	if (flag && n.Lat() < t.Lat()) || (!flag && n.Lon() < t.Lon()) {
+	if (flag && lat < t.Lat()) || (!flag && lon < t.Lon()) {
 		goodSide, badSide = t.left, t.right
 	} else {
 		goodSide, badSide = t.right, t.left
 	}
 
 	if flag {
-		lat, lon = t.Lat(), n.Lon()
+		x, y = t.Lat(), lon
 	} else {
-		lat, lon = n.Lat(), t.Lon()
+		x, y = lat, t.Lon()
 	}
 
-	nearestHelper(goodSide, n, best, min, !flag)
-	if graph.Distance(lat, lon, n.Lat(), n.Lon()) < *min {
-		nearestHelper(badSide, n, best, min, !flag)
+	nearestHelper(goodSide, lat, lon, best, min, !flag)
+	if graph.Distance(x, y, lat, lon) < *min {
+		nearestHelper(badSide, lat, lon, best, min, !flag)
 	}
 }

@@ -36,7 +36,7 @@ func NewStreetMapFrom(fn string, ns ns.NodeSet, nd nd.NameDict) *StreetMap {
 }
 
 func (sm *StreetMap) Closest(lat, lon float64) int64 {
-	return sm.NodeSet.Nearest(graph.NewNode(graph.InvalidNodeID, lat, lon, "")).ID()
+	return sm.NodeSet.Nearest(lat, lon).ID()
 }
 
 func (sm *StreetMap) GetLocationsByPrefix(name string) []string {

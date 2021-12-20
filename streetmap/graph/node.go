@@ -13,10 +13,6 @@ type Node struct {
 	name     string
 }
 
-func NewNode(id int64, lat, lon float64, name string) *Node {
-	return &Node{id: InvalidNodeID, lat: lat, lon: lon, name: name}
-}
-
 func (n *Node) String() string {
 	return fmt.Sprintf("%+v\n", *n)
 }
