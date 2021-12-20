@@ -55,21 +55,22 @@ func (t *TaxiServer) locationsHandler(w http.ResponseWriter, r *http.Request) {
 	if s == "" {
 		m, _ := url.ParseQuery(r.URL.RawQuery)
 		if v, ok := m["name"]; ok {
-			var res []struct {
+			res := map[string]*[]struct {
 				ID   int64  `json:"id"`
 				Name string `json:"name"`
-			}
+			}{"nodes": {}}
 			locNames := t.GetLocationsByPrefix(v[0])
 			for _, ln := range locNames {
 				ids := t.Get(ln)
 				for _, id := range ids {
-					res = append(res, struct {
+					*res["nodes"] = append(*res["nodes"], struct {
 						ID   int64  `json:"id"`
 						Name string `json:"name"`
 					}{ID: id, Name: ln})
 				}
 			}
 			w.Header().Set("content-type", "application/json")
+			w.Header().Set("Access-Control-Allow-Origin", "*")
 			json.NewEncoder(w).Encode(&res)
 			w.WriteHeader(http.StatusOK)
 			return
@@ -81,6 +82,7 @@ func (t *TaxiServer) locationsHandler(w http.ResponseWriter, r *http.Request) {
 		if n != nil {
 			loc := NewLocationFromNode(n)
 			w.Header().Set("content-type", "application/json")
+			w.Header().Set("Access-Control-Allow-Origin", "*")
 			json.NewEncoder(w).Encode(&loc)
 			w.WriteHeader(http.StatusOK)
 			return
@@ -97,7 +99,7 @@ func (t *TaxiServer) directionHandler(w http.ResponseWriter, r *http.Request) {
 		s1, ok1 := m["slat"]
 		s2, ok2 := m["slon"]
 		s3, ok3 := m["dlat"]
-		s4, ok4 := m["slon"]
+		s4, ok4 := m["dlon"]
 
 		if ok1 && ok2 && ok3 && ok4 {
 			slat, _ := strconv.ParseFloat(s1[0], 64)
@@ -110,12 +112,13 @@ func (t *TaxiServer) directionHandler(w http.ResponseWriter, r *http.Request) {
 
 			for e := shortestPath.Front(); e != nil; e = e.Next() {
 				node := t.GetNode(e.Value.(int64))
-				dir.Nodes = append(dir.Nodes, [2]float64{node.Lat(), node.Lon()})
+				dir.Nodes = append(dir.Nodes, [2]float64{node.Lon(), node.Lat()})
 			}
 
 			dir.Text = router.GetDirectionsText(t.StreetMap, shortestPath)
 
 			w.Header().Set("content-type", "application/json")
+			w.Header().Set("Access-Control-Allow-Origin", "*")
 			json.NewEncoder(w).Encode(&dir)
 			w.WriteHeader(http.StatusOK)
 		}
