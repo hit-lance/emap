@@ -3,18 +3,12 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Add a line to a map using a GeoJSON source</title>
+    <title>map</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
 
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-    <script src="https://use.fontawesome.com/c0977efc4f.js"></script>
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
-    <link rel="stylesheet" href="./styles/map.css">
 
     <style>
         body {
@@ -25,9 +19,6 @@
         .direction-text {
             background: white;
             width: 400px;
-            padding: 5px;
-            margin: 5px;
-            border: 2px solid rgb(104, 203, 241);
         }
 
         #map {
@@ -47,10 +38,10 @@
             起点经度: <input type="text" id="slon" , value="116.3978560"><br>
             终点纬度: <input type="text" id="dlat" , value="39.8868562"><br>
             终点经度: <input type="text" id="dlon" , value="116.4046622"><br>
-            <input type="button" onclick="Navigate()" value="Submit">
+            <input type="button" onclick="Navigate()" value="导航">
         </form>
-        <div id='direction-text'></div>
-
+        <div id='direction'>
+        </div>
     </div>
 
     <div id="map"></div>
@@ -121,7 +112,8 @@
                     }
                 });
 
-                document.getElementById("direction-text").innerHTML = "<div class='direction-text'>" + data.text + "</div>";
+                document.getElementById("direction").innerHTML = "<div class='direction-text'>" + data.text + "</div>";
+                document.getElementById('direction').style = 'height:300px;overflow:auto;border: 2px solid rgb(104, 203, 241);'
             });
         }
         // $(document).ready(function () {
