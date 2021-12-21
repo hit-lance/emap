@@ -31,7 +31,6 @@
 </head>
 
 <body>
-
     <div style='position:fixed;z-index:1;'>
         出发地：<input type="text" name="state" id="sloc" list="node_list" onkeyup="Search(this)"><br>
         目的地：<input type="text" name="state" id="dloc" list="node_list" onkeyup="Search(this)"><br>
@@ -39,7 +38,6 @@
         <datalist id="node_list"></datalist>
         <div id='direction'></div>
     </div>
-
     <div id="map"></div>
     <script>
 
@@ -78,59 +76,52 @@
                 }
             });
         });
+
+
         function Navigate() {
             sloc = document.getElementById("sloc").value
             dloc = document.getElementById("dloc").value
 
-            $.get("http://localhost:9000/locations/", {
+            $.when($.get("http://localhost:9000/locations/", {
                 name: sloc,
-            }, function (data, status) {
-                slat = data.lat
-                slon = data.lon
-                $.get("http://localhost:9000/locations/", {
-                    name: dloc,
-                }, function (data, status) {
-                    dlat = data.lat
-                    dlon = data.lon
-                    $.get("http://localhost:9000/direction/", {
-                        slat: slat,
-                        slon: slon,
-                        dlat: dlat,
-                        dlon: dlon,
-                    }, function (data, status) {
-                        console.log(data)
-
-                        // Create a default Marker and add it to the map.
-                        marker1.setLngLat([slon, slat])
-                            .addTo(map);
-                        marker2.setLngLat([dlon, dlat])
-                            .addTo(map);
-
-                        map.getSource('route').setData({
-                            'type': 'Feature',
-                            'properties': {},
-                            'geometry': {
-                                'type': 'LineString',
-                                'coordinates': data.nodes
-                            }
-                        });
-                        document.getElementById("direction").innerHTML = "<div class='direction-text'>" + data.text + "</div>";
-                        document.getElementById('direction').style = 'height:300px;overflow:auto;border: 2px solid rgb(104, 203, 241);'
-                    });
-                });
-            });
-
-            $.get("http://localhost:9000/locations/", {
+            }), $.get("http://localhost:9000/locations/", {
                 name: dloc,
-            }, function (data, status) {
-                console.log(data)
-                dlat = data.lat
-                dlon = data.lon
-            });
+            })).done(function (res1, res2) {
+                slat = res1[0].lat
+                slon = res1[0].lon
+                dlat = res2[0].lat
+                dlon = res2[0].lon
+                $.get("http://localhost:9000/direction/", {
+                    slat: slat,
+                    slon: slon,
+                    dlat: dlat,
+                    dlon: dlon,
+                }, function (data, status) {
+                    console.log(data)
+
+                    // Create a default Marker and add it to the map.
+                    marker1.setLngLat([slon, slat])
+                        .addTo(map);
+                    marker2.setLngLat([dlon, dlat])
+                        .addTo(map);
+
+                    map.getSource('route').setData({
+                        'type': 'Feature',
+                        'properties': {},
+                        'geometry': {
+                            'type': 'LineString',
+                            'coordinates': data.nodes
+                        }
+                    });
+                    document.getElementById("direction").innerHTML = "<div class='direction-text'>" + data.text + "</div>";
+                    document.getElementById('direction').style = 'height:300px;overflow:auto;border: 2px solid rgb(104, 203, 241);'
+                });
+            })
+
+
         }
 
         function Search(ele) {
-            // console.log(ele.value)
             var keyword = ele.value
             if (keyword != '') {
                 $.get("http://localhost:9000/locations/", {
@@ -142,15 +133,9 @@
                             $('#node_list').append('<option value="' + item + '"/>')
                         }
                     })
-
-                    // document.getElementById("direction").innerHTML = "<div class='direction-text'>" + data.text + "</div>";
-                    // document.getElementById('direction').style = 'height:300px;overflow:auto;border: 2px solid rgb(104, 203, 241);'
                 });
             }
         }
-
-        // $(document).ready(function () {
-        // });
     </script>
 </body>
 
