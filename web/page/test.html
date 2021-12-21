@@ -1,30 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>菜鸟教程(runoob.com)</title>
-<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
-</script>
-<script>
-$(document).ready(function(){
-
-	$.get("http://localhost:9000/direction/", {
-		slat:39.9322003,
-		slon:116.3978560,
-		dlat:39.8868562,
-		dlon:116.4046622,
-	},function(data,status){
-		console.log(data.nodes)
-		// alert("数据: " + data[0].id + "\n状态: " + status);
-	});
-
-});
-</script>
+<style>
+	.direction-text {
+		background: white;
+		width: 400px;
+		padding: 5px;
+		margin: 5px;
+		border: 2px solid rgb(104, 203, 241);
+	}
+</style>
 </head>
+
 <body>
-
-<button>发送一个 HTTP GET 请求并获取返回结果</button>
-<button id="123">发送一个 HTTP GET 请求并获取返回结果2</button>
-
+	<div class='direction-text'>全程5.667公里<br>从起点出发，进入<b>地安门东大街</b>，继续前行0.141公里<br>右转，进入<b>北河沿大街</b>，继续前行1.679公里<br>左转，进入<b>灯市口西街</b>，继续前行0.041公里<br>右转，进入<b>东黄城根南街</b>，继续前行0.341公里<br>直行，进入<b>晨光街</b>，继续前行0.635公里<br>左转，进入<b>霞公府街</b>，继续前行0.355公里<br>右转，进入<b>王府井大街</b>，继续前行0.133公里<br>向右前方行驶，继续前行0.020公里<br>向左前方行驶，进入<b>台基厂大街</b>，继续前行0.779公里<br>向右前方行驶，继续前行0.014公里<br>向左前方行驶，进入<b>祈年大街</b>，继续前行1.398公里<br>右转，进入<b>天坛路</b>，继续前行0.132公里<br>到达目的地<br></div>
 </body>
-</html>

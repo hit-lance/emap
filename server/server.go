@@ -115,7 +115,7 @@ func (t *TaxiServer) directionHandler(w http.ResponseWriter, r *http.Request) {
 				dir.Nodes = append(dir.Nodes, [2]float64{node.Lon(), node.Lat()})
 			}
 
-			dir.Text = router.GetDirectionsText(t.StreetMap, shortestPath)
+			dir.Text = router.GetDirectionsHTML(t.StreetMap, shortestPath)
 
 			w.Header().Set("content-type", "application/json")
 			w.Header().Set("Access-Control-Allow-Origin", "*")

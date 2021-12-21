@@ -37,7 +37,7 @@ type NavigationDirection struct {
 
 func (nd NavigationDirection) String() (s string) {
 	if nd.way != "" {
-		s = fmt.Sprintf("%s，进入*%s*，继续前行%.3f公里", DirectionText[nd.direction], nd.way, nd.distance)
+		s = fmt.Sprintf("%s，进入<b>%s</b>，继续前行%.3f公里", DirectionText[nd.direction], nd.way, nd.distance)
 	} else {
 		s = fmt.Sprintf("%s，继续前行%.3f公里", DirectionText[nd.direction], nd.distance)
 	}

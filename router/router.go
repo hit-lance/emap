@@ -47,6 +47,24 @@ func GetDirectionsText(m *sm.StreetMap, route *list.List) (s string) {
 	return
 }
 
+func GetDirectionsHTML(m *sm.StreetMap, route *list.List) (s string) {
+	nd := RouteDirections(m, route)
+	if len(nd) == 0 {
+		s = "出发点和目的地距离很近，无需导航<br>"
+	}
+
+	dist := 0.0
+	for _, d := range nd {
+		dist += d.distance
+	}
+	s += fmt.Sprintf("全程%.3f公里<br>", dist)
+	for _, d := range nd {
+		s += fmt.Sprintf("%s<br>", d)
+	}
+	s += "到达目的地<br>"
+	return
+}
+
 func RouteDirections(m *sm.StreetMap, route *list.List) (nd []NavigationDirection) {
 	if route == nil || route.Len() < 2 {
 		fmt.Fprintln(os.Stderr, "got wrong input route.")
