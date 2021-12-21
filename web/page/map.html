@@ -33,15 +33,11 @@
 <body>
 
     <div style='position:fixed;z-index:1;'>
-        <form name="form">
-            起点纬度: <input type="text" id="slat" , value="39.9322003"><br>
-            起点经度: <input type="text" id="slon" , value="116.3978560"><br>
-            终点纬度: <input type="text" id="dlat" , value="39.8868562"><br>
-            终点经度: <input type="text" id="dlon" , value="116.4046622"><br>
-            <input type="button" onclick="Navigate()" value="导航">
-        </form>
-        <div id='direction'>
-        </div>
+        出发地：<input type="text" name="state" id="sloc" list="node_list" onkeyup="Search(this)"><br>
+        目的地：<input type="text" name="state" id="dloc" list="node_list" onkeyup="Search(this)"><br>
+        <input type="button" onclick="Navigate()" value="导航">
+        <datalist id="node_list"></datalist>
+        <div id='direction'></div>
     </div>
 
     <div id="map"></div>
@@ -56,7 +52,9 @@
         });
 
         const marker1 = new mapboxgl.Marker({ color: 'green' })
-        const marker2 = new mapboxgl.Marker({ color: 'red' })
+        const marker2 = new mapboxgl.Marker({ color: 'orange' })
+
+        var slat, slon, dlat, dlon
 
         map.on('load', () => {
             map.addSource('route', {
@@ -79,43 +77,78 @@
                     'line-width': 4
                 }
             });
-
-
         });
         function Navigate() {
-            slat = document.getElementById("slat").value
-            slon = document.getElementById("slon").value
-            dlat = document.getElementById("dlat").value
-            dlon = document.getElementById("dlon").value
+            sloc = document.getElementById("sloc").value
+            dloc = document.getElementById("dloc").value
 
-            $.get("http://localhost:9000/direction/", {
-                slat: slat,
-                slon: slon,
-                dlat: dlat,
-                dlon: dlon,
+            $.get("http://localhost:9000/locations/", {
+                name: sloc,
+            }, function (data, status) {
+                slat = data.lat
+                slon = data.lon
+                $.get("http://localhost:9000/locations/", {
+                    name: dloc,
+                }, function (data, status) {
+                    dlat = data.lat
+                    dlon = data.lon
+                    $.get("http://localhost:9000/direction/", {
+                        slat: slat,
+                        slon: slon,
+                        dlat: dlat,
+                        dlon: dlon,
+                    }, function (data, status) {
+                        console.log(data)
+
+                        // Create a default Marker and add it to the map.
+                        marker1.setLngLat([slon, slat])
+                            .addTo(map);
+                        marker2.setLngLat([dlon, dlat])
+                            .addTo(map);
+
+                        map.getSource('route').setData({
+                            'type': 'Feature',
+                            'properties': {},
+                            'geometry': {
+                                'type': 'LineString',
+                                'coordinates': data.nodes
+                            }
+                        });
+                        document.getElementById("direction").innerHTML = "<div class='direction-text'>" + data.text + "</div>";
+                        document.getElementById('direction').style = 'height:300px;overflow:auto;border: 2px solid rgb(104, 203, 241);'
+                    });
+                });
+            });
+
+            $.get("http://localhost:9000/locations/", {
+                name: dloc,
             }, function (data, status) {
                 console.log(data)
-
-                // Create a default Marker and add it to the map.
-                marker1.setLngLat([slon, slat])
-                    .addTo(map);
-                marker2.setLngLat([dlon, dlat])
-                    .addTo(map);
-
-
-                map.getSource('route').setData({
-                    'type': 'Feature',
-                    'properties': {},
-                    'geometry': {
-                        'type': 'LineString',
-                        'coordinates': data.nodes
-                    }
-                });
-
-                document.getElementById("direction").innerHTML = "<div class='direction-text'>" + data.text + "</div>";
-                document.getElementById('direction').style = 'height:300px;overflow:auto;border: 2px solid rgb(104, 203, 241);'
+                dlat = data.lat
+                dlon = data.lon
             });
         }
+
+        function Search(ele) {
+            // console.log(ele.value)
+            var keyword = ele.value
+            if (keyword != '') {
+                $.get("http://localhost:9000/locations/", {
+                    prefix: ele.value
+                }, function (data, status) {
+                    $('#node_list').empty()
+                    $.each(data.names, function (index, item) {
+                        if (ele.value != item) {
+                            $('#node_list').append('<option value="' + item + '"/>')
+                        }
+                    })
+
+                    // document.getElementById("direction").innerHTML = "<div class='direction-text'>" + data.text + "</div>";
+                    // document.getElementById('direction').style = 'height:300px;overflow:auto;border: 2px solid rgb(104, 203, 241);'
+                });
+            }
+        }
+
         // $(document).ready(function () {
         // });
     </script>

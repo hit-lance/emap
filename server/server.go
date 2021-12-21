@@ -51,29 +51,35 @@ func NewTaxiServer(fn string) *TaxiServer {
 // GET /locations?name=xxx return every location ids of which name has prefix xxx
 // GET /locations/id return node info of specific id
 func (t *TaxiServer) locationsHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("content-type", "application/json")
+
 	s := strings.TrimPrefix(r.URL.Path, "/locations/")
 	if s == "" {
 		m, _ := url.ParseQuery(r.URL.RawQuery)
-		if v, ok := m["name"]; ok {
-			res := map[string]*[]struct {
-				ID   int64  `json:"id"`
-				Name string `json:"name"`
-			}{"nodes": {}}
+		if v, ok := m["prefix"]; ok {
 			locNames := t.GetLocationsByPrefix(v[0])
-			for _, ln := range locNames {
-				ids := t.Get(ln)
-				for _, id := range ids {
-					*res["nodes"] = append(*res["nodes"], struct {
-						ID   int64  `json:"id"`
-						Name string `json:"name"`
-					}{ID: id, Name: ln})
-				}
-			}
-			w.Header().Set("content-type", "application/json")
-			w.Header().Set("Access-Control-Allow-Origin", "*")
+			res := map[string][]string{"names": locNames}
+
 			json.NewEncoder(w).Encode(&res)
 			w.WriteHeader(http.StatusOK)
 			return
+		}
+
+		if v, ok := m["name"]; ok {
+			nids := t.Get(v[0])
+			if len(nids) > 0 {
+				n := t.GetNode(nids[0])
+				if n == nil {
+					panic("Node id in node set must be in graph")
+				}
+
+				loc := NewLocationFromNode(n)
+				json.NewEncoder(w).Encode(&loc)
+				w.WriteHeader(http.StatusOK)
+				return
+			}
+
 		}
 	}
 
@@ -81,8 +87,6 @@ func (t *TaxiServer) locationsHandler(w http.ResponseWriter, r *http.Request) {
 		n := t.GetNode(id)
 		if n != nil {
 			loc := NewLocationFromNode(n)
-			w.Header().Set("content-type", "application/json")
-			w.Header().Set("Access-Control-Allow-Origin", "*")
 			json.NewEncoder(w).Encode(&loc)
 			w.WriteHeader(http.StatusOK)
 			return
@@ -93,6 +97,9 @@ func (t *TaxiServer) locationsHandler(w http.ResponseWriter, r *http.Request) {
 
 // GET /dir?from=xxx&to=yyy return navigation from xxx to yyy
 func (t *TaxiServer) directionHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("content-type", "application/json")
+	
 	s := strings.TrimPrefix(r.URL.Path, "/direction/")
 	if s == "" {
 		m, _ := url.ParseQuery(r.URL.RawQuery)
@@ -117,8 +124,6 @@ func (t *TaxiServer) directionHandler(w http.ResponseWriter, r *http.Request) {
 
 			dir.Text = router.GetDirectionsHTML(t.StreetMap, shortestPath)
 
-			w.Header().Set("content-type", "application/json")
-			w.Header().Set("Access-Control-Allow-Origin", "*")
 			json.NewEncoder(w).Encode(&dir)
 			w.WriteHeader(http.StatusOK)
 		}

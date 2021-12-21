@@ -10,7 +10,7 @@ import (
 
 var allowedHighwayTypes = map[string]bool{"motorway": true, "trunk": true, "primary": true, "secondary": true, "tertiary": true, "unclassified": true,
 	"residential": true, "living_street": true, "motorway_link": true, "trunk_link": true, "primary_link": true,
-	"secondary_link": true, "tertiary_link": true}
+	"secondary_link": true, "tertiary_link": true, "service": true}
 
 type states struct {
 	active, wayName, wayType string

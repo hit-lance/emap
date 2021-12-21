@@ -1,14 +1,57 @@
-<style>
-	.direction-text {
-		background: white;
-		width: 350px;
-		padding: 5px;
-		margin: 5px;
-		border: 2px solid rgb(104, 203, 241);
-	}
-</style>
-</head>
+出发地：<input type="text" name="state" id="sloc" list="node_list" onkeyup="search(this)"><br>
+目的地：<input type="text" name="state" id="dloc" list="node_list" onkeyup="search(this)"><br>
+<input type="button" onclick="Navigate()" value="导航">
+<datalist id="node_list"></datalist>
 
-<body>
-	<div class='direction-text'>全程5.667公里<br>从起点出发，进入<b>地安门东大街</b>，继续前行0.141公里<br>右转，进入<b>北河沿大街</b>，继续前行1.679公里<br>左转，进入<b>灯市口西街</b>，继续前行0.041公里<br>右转，进入<b>东黄城根南街</b>，继续前行0.341公里<br>直行，进入<b>晨光街</b>，继续前行0.635公里<br>左转，进入<b>霞公府街</b>，继续前行0.355公里<br>右转，进入<b>王府井大街</b>，继续前行0.133公里<br>向右前方行驶，继续前行0.020公里<br>向左前方行驶，进入<b>台基厂大街</b>，继续前行0.779公里<br>向右前方行驶，继续前行0.014公里<br>向左前方行驶，进入<b>祈年大街</b>，继续前行1.398公里<br>右转，进入<b>天坛路</b>，继续前行0.132公里<br>到达目的地<br></div>
-</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+<script>
+
+	function Navigate() {
+		sloc = document.getElementById("sloc").value
+		dloc = document.getElementById("dloc").value
+		console.log(sloc)
+		console.log(dloc)
+
+		var slat, slon, dlat, dlon
+
+		$.get("http://localhost:9000/locations/", {
+			name: sloc,
+		}, function (data, status) {
+			console.log(data)
+			slat = data.lat
+			slon = data.lon
+		});
+
+		$.get("http://localhost:9000/locations/", {
+			name: dloc,
+		}, function (data, status) {
+			console.log(data)
+			dlat = data.lat
+			dlon = data.lon
+		});
+	}
+
+	function search(ele) {
+		// console.log(ele.value)
+		var keyword = ele.value
+		if (keyword != '') {
+			$.get("http://localhost:9000/locations/", {
+				prefix: ele.value
+			}, function (data, status) {
+				console.log(data)
+				$('#node_list').empty()
+				$.each(data.names, function (index, item) {
+					console.log(item)
+					if (ele.value != item) {
+						$('#node_list').append('<option value="' + item + '"/>')
+					}
+				})
+
+				// document.getElementById("direction").innerHTML = "<div class='direction-text'>" + data.text + "</div>";
+				// document.getElementById('direction').style = 'height:300px;overflow:auto;border: 2px solid rgb(104, 203, 241);'
+			});
+		}
+	}
+</script>
