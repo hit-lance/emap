@@ -32,7 +32,8 @@ func ShortestPath(s Solver, m *sm.StreetMap, slat, slon, dlat, dlon float64) *li
 func GetDirectionsText(m *sm.StreetMap, route *list.List) (s string) {
 	nd := RouteDirections(m, route)
 	if len(nd) == 0 {
-		s = "出发点和目的地距离很近，无需导航"
+		s = "出发点和目的地距离很近，或不可达"
+		return
 	}
 
 	dist := 0.0
@@ -50,7 +51,8 @@ func GetDirectionsText(m *sm.StreetMap, route *list.List) (s string) {
 func GetDirectionsHTML(m *sm.StreetMap, route *list.List) (s string) {
 	nd := RouteDirections(m, route)
 	if len(nd) == 0 {
-		s = "出发点和目的地距离很近，无需导航<br>"
+		s = "出发点和目的地距离很近，或不可达<br>"
+		return
 	}
 
 	dist := 0.0

@@ -7,7 +7,6 @@
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
     <style>
@@ -16,9 +15,18 @@
             padding: 0;
         }
 
+        .direction-card {
+            margin: 10px;
+            position:fixed;
+            z-index:1;
+        }
+
         .direction-text {
             background: white;
             width: 400px;
+            height: 300px;
+            overflow: auto;
+            border: 2px solid rgb(104, 203, 241);
         }
 
         #map {
@@ -31,10 +39,10 @@
 </head>
 
 <body>
-    <div style='position:fixed;z-index:1;'>
+    <div class='direction-card'>
         出发地：<input type="text" name="state" id="sloc" list="node_list" onkeyup="Search(this)"><br>
         目的地：<input type="text" name="state" id="dloc" list="node_list" onkeyup="Search(this)"><br>
-        <input type="button" onclick="Navigate()" value="导航">
+        <input type="button" onclick="Navigate()" value="导航" style="margin-top: 5px;">
         <datalist id="node_list"></datalist>
         <div id='direction'></div>
     </div>
@@ -51,8 +59,6 @@
 
         const marker1 = new mapboxgl.Marker({ color: 'green' })
         const marker2 = new mapboxgl.Marker({ color: 'orange' })
-
-        var slat, slon, dlat, dlon
 
         map.on('load', () => {
             map.addSource('route', {
@@ -82,11 +88,21 @@
             sloc = document.getElementById("sloc").value
             dloc = document.getElementById("dloc").value
 
+            var slat, slon, dlat, dlon
+
             $.when($.get("http://localhost:9000/locations/", {
                 name: sloc,
             }), $.get("http://localhost:9000/locations/", {
                 name: dloc,
             })).done(function (res1, res2) {
+                if (res1[0].hasOwnProperty("error")) {
+                    alert("出发地不存在！")
+                    return
+                }
+                if (res2[0].hasOwnProperty("error")) {
+                    alert("目的地不存在！")
+                    return
+                }
                 slat = res1[0].lat
                 slon = res1[0].lon
                 dlat = res2[0].lat
@@ -105,20 +121,19 @@
                     marker2.setLngLat([dlon, dlat])
                         .addTo(map);
 
-                    map.getSource('route').setData({
-                        'type': 'Feature',
-                        'properties': {},
-                        'geometry': {
-                            'type': 'LineString',
-                            'coordinates': data.nodes
-                        }
-                    });
+                    if (data.nodes != null) {
+                        map.getSource('route').setData({
+                            'type': 'Feature',
+                            'properties': {},
+                            'geometry': {
+                                'type': 'LineString',
+                                'coordinates': data.nodes
+                            }
+                        });
+                    }
                     document.getElementById("direction").innerHTML = "<div class='direction-text'>" + data.text + "</div>";
-                    document.getElementById('direction').style = 'height:300px;overflow:auto;border: 2px solid rgb(104, 203, 241);'
                 });
             })
-
-
         }
 
         function Search(ele) {

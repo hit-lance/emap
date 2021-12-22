@@ -78,6 +78,9 @@ func (t *TaxiServer) locationsHandler(w http.ResponseWriter, r *http.Request) {
 				json.NewEncoder(w).Encode(&loc)
 				w.WriteHeader(http.StatusOK)
 				return
+			} else {
+				json.NewEncoder(w).Encode(map[string]string{"error": "location name not found."})
+				w.WriteHeader(http.StatusOK)
 			}
 
 		}
@@ -99,7 +102,7 @@ func (t *TaxiServer) locationsHandler(w http.ResponseWriter, r *http.Request) {
 func (t *TaxiServer) directionHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("content-type", "application/json")
-	
+
 	s := strings.TrimPrefix(r.URL.Path, "/direction/")
 	if s == "" {
 		m, _ := url.ParseQuery(r.URL.RawQuery)
