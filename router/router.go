@@ -74,7 +74,7 @@ func RouteDirections(m *sm.StreetMap, route *list.List) (nd []NavigationDirectio
 	}
 
 	p := route.Front()
-	var direction DirectionType
+	var prevDirection DirectionType
 	var distance, prevBearing float64
 	var prevWayName string
 
@@ -84,21 +84,22 @@ func RouteDirections(m *sm.StreetMap, route *list.List) (nd []NavigationDirectio
 		curBearing := m.GetNode(cur).Bearing(m.GetNode(next))
 
 		if p == route.Front() {
-			direction = Start
+			prevDirection = Start
 			prevWayName = way.Name()
 			distance = way.Weight()
 		} else {
-			if prevWayName != "" && way.Name() == prevWayName {
+			curDirection := getDirection(prevBearing, curBearing)
+			if way.Name() == prevWayName && !(prevWayName == "" && (prevDirection != Start && prevDirection != curDirection) || (prevDirection == Start && curDirection != Straight)) {
 				distance += way.Weight()
 			} else {
-				nd = append(nd, NavigationDirection{direction: direction, way: prevWayName, distance: distance})
-				direction = getDirection(prevBearing, curBearing)
+				nd = append(nd, NavigationDirection{direction: prevDirection, way: prevWayName, distance: distance})
+				prevDirection = curDirection
 				prevWayName = way.Name()
 				distance = way.Weight()
 			}
 		}
 		if p.Next().Next() == nil {
-			nd = append(nd, NavigationDirection{direction: direction, way: prevWayName, distance: distance})
+			nd = append(nd, NavigationDirection{direction: prevDirection, way: prevWayName, distance: distance})
 			break
 		}
 		prevBearing = curBearing
