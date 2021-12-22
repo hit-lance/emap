@@ -10,11 +10,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-        }
-
         .direction-card {
             margin: 10px;
             position:fixed;
@@ -42,116 +37,13 @@
     <div class='direction-card'>
         出发地：<input type="text" name="state" id="sloc" list="node_list" onkeyup="Search(this)"><br>
         目的地：<input type="text" name="state" id="dloc" list="node_list" onkeyup="Search(this)"><br>
-        <input type="button" onclick="Navigate()" value="导航" style="margin-top: 5px;">
+        <input type="button" onclick="Navigate()" value="导航" style="margin-top: 5px;margin-bottom: 5px;">
         <datalist id="node_list"></datalist>
         <div id='direction'></div>
     </div>
     <div id="map"></div>
-    <script>
-
-        mapboxgl.accessToken = 'pk.eyJ1IjoiamluZ2ZlbmdsaSIsImEiOiJja3hieWlycGE0MzVzMnNvNnR0cnd6eHZoIn0.LH-XpbouONSC1PaztPB19w';
-        const map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v11',
-            center: [116.39111557492419, 39.90584776852543],
-            zoom: 13
-        });
-
-        const marker1 = new mapboxgl.Marker({ color: 'green' })
-        const marker2 = new mapboxgl.Marker({ color: 'orange' })
-
-        map.on('load', () => {
-            map.addSource('route', {
-                'type': 'geojson',
-                'data': {
-                    'type': 'Feature',
-
-                }
-            });
-            map.addLayer({
-                'id': 'route',
-                'type': 'line',
-                'source': 'route',
-                'layout': {
-                    'line-join': 'round',
-                    'line-cap': 'round'
-                },
-                'paint': {
-                    'line-color': '#1E90FF',
-                    'line-width': 4
-                }
-            });
-        });
-
-
-        function Navigate() {
-            sloc = document.getElementById("sloc").value
-            dloc = document.getElementById("dloc").value
-
-            var slat, slon, dlat, dlon
-
-            $.when($.get("http://localhost:9000/locations/", {
-                name: sloc,
-            }), $.get("http://localhost:9000/locations/", {
-                name: dloc,
-            })).done(function (res1, res2) {
-                if (res1[0].hasOwnProperty("error")) {
-                    alert("出发地不存在！")
-                    return
-                }
-                if (res2[0].hasOwnProperty("error")) {
-                    alert("目的地不存在！")
-                    return
-                }
-                slat = res1[0].lat
-                slon = res1[0].lon
-                dlat = res2[0].lat
-                dlon = res2[0].lon
-                $.get("http://localhost:9000/direction/", {
-                    slat: slat,
-                    slon: slon,
-                    dlat: dlat,
-                    dlon: dlon,
-                }, function (data, status) {
-                    console.log(data)
-
-                    // Create a default Marker and add it to the map.
-                    marker1.setLngLat([slon, slat])
-                        .addTo(map);
-                    marker2.setLngLat([dlon, dlat])
-                        .addTo(map);
-
-                    if (data.nodes != null) {
-                        map.getSource('route').setData({
-                            'type': 'Feature',
-                            'properties': {},
-                            'geometry': {
-                                'type': 'LineString',
-                                'coordinates': data.nodes
-                            }
-                        });
-                    }
-                    document.getElementById("direction").innerHTML = "<div class='direction-text'>" + data.text + "</div>";
-                });
-            })
-        }
-
-        function Search(ele) {
-            var keyword = ele.value
-            if (keyword != '') {
-                $.get("http://localhost:9000/locations/", {
-                    prefix: ele.value
-                }, function (data, status) {
-                    $('#node_list').empty()
-                    $.each(data.names, function (index, item) {
-                        if (ele.value != item) {
-                            $('#node_list').append('<option value="' + item + '"/>')
-                        }
-                    })
-                });
-            }
-        }
-    </script>
+    <script src="./scripts/map.js"></script>
+ 
 </body>
 
 </html>
