@@ -34,7 +34,7 @@ map.on('load', () => {
         },
         'paint': {
             'line-color': '#1E90FF',
-            'line-width': 4
+            'line-width': 3
         }
     });
 });
