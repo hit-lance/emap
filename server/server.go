@@ -59,6 +59,10 @@ func (t *TaxiServer) locationsHandler(w http.ResponseWriter, r *http.Request) {
 		m, _ := url.ParseQuery(r.URL.RawQuery)
 		if v, ok := m["prefix"]; ok {
 			locNames := t.GetLocationsByPrefix(v[0])
+			const maxLen int = 10
+			if len(locNames) > maxLen {
+				locNames = locNames[:maxLen]
+			}
 			res := map[string][]string{"names": locNames}
 
 			json.NewEncoder(w).Encode(&res)

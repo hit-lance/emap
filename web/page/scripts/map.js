@@ -98,7 +98,7 @@ function Search(ele) {
         }, function (data) {
             $('#node_list').empty()
             $.each(data.names, function (index, item) {
-                if (ele.value != item) {
+                if (!(ele.value == item && data.names.length == 1)) {
                     $('#node_list').append('<option value="' + item + '"/>')
                 }
             })
