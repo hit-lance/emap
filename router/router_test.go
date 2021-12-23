@@ -11,7 +11,7 @@ import (
 func TestRouter(t *testing.T) {
 	tinyOsmPath := "../data/tiny-clean.osm.xml"
 	berkeleyOsmPath := "../data/berkeley.osm.xml"
-	beijingOsmPath := "../data/beijing.osm.xml"
+	beijingOsmPath := "../data/tiny-beijing.osm.xml"
 
 	paramsPath := "../data/path_params.txt"
 	resultsPath := "../data/path_results.txt"
@@ -90,7 +90,7 @@ func assertListEqual(t testing.TB, got *list.List, want *list.List) {
 			return
 		}
 	}
-	
+
 	if g != nil || w != nil {
 		t.Errorf("assertListEqual failed.")
 	}

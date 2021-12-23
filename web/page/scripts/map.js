@@ -6,6 +6,10 @@ const map = new mapboxgl.Map({
     zoom: 13
 });
 
+map.addControl(new MapboxLanguage({
+    defaultLanguage: 'zh-Hans'
+}));
+
 const marker1 = new mapboxgl.Marker({ color: 'green' })
 const marker2 = new mapboxgl.Marker({ color: 'orange' })
 
