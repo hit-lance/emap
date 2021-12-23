@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-type TaxiServer struct {
+type MapServer struct {
 	*streetmap.StreetMap
 	http.Handler
 }
@@ -36,8 +36,8 @@ func NewLocation(id int64, lat, lon float64, name string) *Location {
 	return &Location{ID: id, Lat: lat, Lon: lon, Name: name}
 }
 
-func NewTaxiServer(fn string) *TaxiServer {
-	t := new(TaxiServer)
+func NewTaxiServer(fn string) *MapServer {
+	t := new(MapServer)
 	t.StreetMap = streetmap.NewStreetMap(fn)
 
 	router := http.NewServeMux()
@@ -50,7 +50,7 @@ func NewTaxiServer(fn string) *TaxiServer {
 
 // GET /locations?name=xxx return every location ids of which name has prefix xxx
 // GET /locations/id return node info of specific id
-func (t *TaxiServer) locationsHandler(w http.ResponseWriter, r *http.Request) {
+func (t *MapServer) locationsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("content-type", "application/json")
 
@@ -103,7 +103,7 @@ func (t *TaxiServer) locationsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // GET /dir?from=xxx&to=yyy return navigation from xxx to yyy
-func (t *TaxiServer) directionHandler(w http.ResponseWriter, r *http.Request) {
+func (t *MapServer) directionHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("content-type", "application/json")
 

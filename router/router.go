@@ -9,24 +9,24 @@ import (
 	"os"
 )
 
-type Solver interface {
-	ShortestPath(m *sm.StreetMap, src, dst int64) (sol *list.List)
+type ShortestPathSolver interface {
+	Solve(m *sm.StreetMap, src, dst int64) (sol *list.List)
 }
 
-type SolverFunc func(m *sm.StreetMap, src, dst int64) *list.List
+type ShortestPathSolverFunc func(m *sm.StreetMap, src, dst int64) *list.List
 
-func (f SolverFunc) ShortestPath(m *sm.StreetMap, src, dst int64) (sol *list.List) {
+func (f ShortestPathSolverFunc) Solve(m *sm.StreetMap, src, dst int64) (sol *list.List) {
 	return f(m, src, dst)
 }
 
 func Navigate(m *sm.StreetMap, slat, slon, dlat, dlon float64) *list.List {
-	return ShortestPath(SolverFunc(aStar), m, slat, slon, dlat, dlon)
+	return ShortestPath(ShortestPathSolverFunc(aStar), m, slat, slon, dlat, dlon)
 }
 
-func ShortestPath(s Solver, m *sm.StreetMap, slat, slon, dlat, dlon float64) *list.List {
+func ShortestPath(s ShortestPathSolver, m *sm.StreetMap, slat, slon, dlat, dlon float64) *list.List {
 	src := m.Closest(slat, slon)
 	dst := m.Closest(dlat, dlon)
-	return s.ShortestPath(m, src, dst)
+	return s.Solve(m, src, dst)
 }
 
 func GetDirectionsText(m *sm.StreetMap, route *list.List) (s string) {

@@ -24,10 +24,10 @@ func TestRouter(t *testing.T) {
 		os.Exit(1)
 	}
 
-	t.Run("SolverFunc(dijkstra)", func(t *testing.T) {
+	t.Run("ShortestPathSolverFunc(dijkstra)", func(t *testing.T) {
 		m := sm.NewStreetMap(tinyOsmPath)
 
-		sol := ShortestPath(SolverFunc(dijkstra), m, 38.1, 0.4, 38.6, 0.4)
+		sol := ShortestPath(ShortestPathSolverFunc(dijkstra), m, 38.1, 0.4, 38.6, 0.4)
 		want := list.New()
 		want.PushBack(int64(41))
 		want.PushBack(int64(63))
@@ -42,7 +42,7 @@ func TestRouter(t *testing.T) {
 		m := sm.NewStreetMap(berkeleyOsmPath)
 
 		for i := 7; i < testsNum; i++ {
-			sol := ShortestPath(SolverFunc(dijkstra), m, testParas[i][0], testParas[i][1], testParas[i][2], testParas[i][3])
+			sol := ShortestPath(ShortestPathSolverFunc(dijkstra), m, testParas[i][0], testParas[i][1], testParas[i][2], testParas[i][3])
 			want := expectedResults[i]
 			assertListEqual(t, sol, want)
 		}
@@ -51,7 +51,7 @@ func TestRouter(t *testing.T) {
 	t.Run("astar", func(t *testing.T) {
 		m := sm.NewStreetMap(tinyOsmPath)
 
-		sol := ShortestPath(SolverFunc(aStar), m, 38.1, 0.4, 38.6, 0.4)
+		sol := ShortestPath(ShortestPathSolverFunc(aStar), m, 38.1, 0.4, 38.6, 0.4)
 
 		want := list.New()
 		want.PushBack(int64(41))
@@ -66,7 +66,7 @@ func TestRouter(t *testing.T) {
 		m := sm.NewStreetMap(berkeleyOsmPath)
 
 		for i := 1; i < testsNum; i++ {
-			sol := ShortestPath(SolverFunc(aStar), m, testParas[i][0], testParas[i][1], testParas[i][2], testParas[i][3])
+			sol := ShortestPath(ShortestPathSolverFunc(aStar), m, testParas[i][0], testParas[i][1], testParas[i][2], testParas[i][3])
 			want := expectedResults[i]
 			assertListEqual(t, sol, want)
 		}
@@ -139,7 +139,7 @@ func BenchmarkDijkstra(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		ShortestPath(SolverFunc(dijkstra), m, 37.87383979834944, -122.23354274523257, 37.86020837234193, -122.23307272570244)
+		ShortestPath(ShortestPathSolverFunc(dijkstra), m, 37.87383979834944, -122.23354274523257, 37.86020837234193, -122.23307272570244)
 	}
 }
 
@@ -149,6 +149,6 @@ func BenchmarkAStar(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		ShortestPath(SolverFunc(aStar), m, 37.87383979834944, -122.23354274523257, 37.86020837234193, -122.23307272570244)
+		ShortestPath(ShortestPathSolverFunc(aStar), m, 37.87383979834944, -122.23354274523257, 37.86020837234193, -122.23307272570244)
 	}
 }
