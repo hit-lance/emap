@@ -292,7 +292,10 @@ Mapbox 是定制在线地图提供商，使用其开源的js库[Mapbox GL JS](ht
 
   用户按下导航按钮后，将出发地和目的地的名称发送给后端，通过/locations/name接口获得Node的具体信息（即经纬度），然后将经纬度作为参数请求 /direction接口获得导航信息，并展示在页面上。
 
-  
+### Quickstart
 
-
-
+```shell
+cd server
+go build
+./server
+```
