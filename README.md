@@ -213,7 +213,7 @@ func ShortestPath(s ShortestPathSolver, m *sm.StreetMap, slat, slon, dlat, dlon 
 
 #### ShortestPathSolver
 
-Solver是一个interface，用来计算Graph两个Node之间的最短路径，定义如下：
+ShortestPathSolver是一个interface，用来计算Graph两个Node之间的最短路径，定义如下：
 
 ```shell
 type ShortestPathSolver interface {
@@ -245,8 +245,8 @@ type NavigationDirection struct {
 对于``ShortestPathSolver``返回的List，``RouteDirections``通过计算相邻两个路的夹角（Bearing）并比较可以计算出方向，如果路径中相邻的两处方向和路名都相同，则可以合并为一个NavigationDirection。最终通过``GetDirectionsHTML``获得最终的导航文本信息。
 
 ```go
-func RouteDirections(m *sm.StreetMap, route *list.List) (nd []NavigationDirection)
 func GetDirectionsHTML(m *sm.StreetMap, route *list.List) (s string)
+func RouteDirections(m *sm.StreetMap, route *list.List) (nd []NavigationDirection)
 ```
 
 ### server
