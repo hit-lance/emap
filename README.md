@@ -299,3 +299,5 @@ cd server
 go build
 ./server
 ```
+### Reference
+[UCB CS61B Project 2C: Bear Maps](https://sp19.datastructur.es/materials/proj/proj2c/proj2c)
